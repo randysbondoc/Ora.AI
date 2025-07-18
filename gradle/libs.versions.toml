@@ -1,16 +1,17 @@
 [versions]
 # Android & Gradle
-compileSdk = "36"
+compileSdk = "34"
 minSdk = "26"
-targetSdk = "36"
-androidGradlePlugin = "8.11.1" # <-- UPDATED from 8.4.1
+targetSdk = "34"
+androidGradlePlugin = "8.5.0"
 kotlin = "1.9.23"
 
 # App Dependencies
 appCompat = "1.7.1"
-coreKtx = "1.16.0"
+core = "1.13.1"
 constraintLayout = "2.1.4"
 material = "1.12.0"
+preferenceKtx = "1.2.1"
 
 # Testing
 junit = "4.13.2"
@@ -18,18 +19,16 @@ androidxJunit = "1.2.1"
 espressoCore = "3.6.1"
 
 [libraries]
-# App Dependencies
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appCompat" }
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintLayout" }
-google-android-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-
-# Testing
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appCompat" }
+core = { group = "androidx.core", name = "core", version.ref = "core" }
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintLayout" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "preferenceKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxJunit" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 
 [plugins]
-# Define the plugins here
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

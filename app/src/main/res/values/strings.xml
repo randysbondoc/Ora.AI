@@ -1,3 +1,32 @@
 <resources>
     <string name="app_name">Ora</string>
+
+    <string-array name="font_display_names">
+        <item>Font 1</item> <item>Font 2</item> <item>Font 3</item> <item>Font 4</item> <item>Font 5</item>
+        <item>Font 6</item> <item>Font 7</item> <item>Font 8</item> <item>Font 9</item> <item>Font 10</item>
+    </string-array>
+    <string-array name="font_file_values">
+        <item>orbitron_regular.ttf</item> <item>press_start_2p_regular.ttf</item> <item>cutive_mono_regular.ttf</item>
+        <item>cinzel_regular.ttf</item> <item>righteous_regular.ttf</item> <item>josefin_sans_regular.ttf</item>
+        <item>lora_regular.ttf</item> <item>montserrat_regular.ttf</item> <item>anton_regular.ttf</item>
+        <item>bitcount_variable.ttf</item>
+    </string-array>
+
+    <string-array name="background_names">
+        <item>Amoled Black</item>
+        <item>Plain White</item>
+        <item>Galaxy</item>
+        <item>Starry Sky</item>
+        <item>Laboratory</item>
+        <item>Universe</item>
+    </string-array>
+    <string-array name="background_values">
+        <item>black</item>
+        <item>white</item>
+        <item>galaxy</item>
+        <item>stars</item>
+        <item>lab</item>
+        <item>universe</item>
+    </string-array>
+
 </resources>

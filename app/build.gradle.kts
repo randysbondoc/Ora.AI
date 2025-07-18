@@ -1,5 +1,4 @@
 plugins {
-    // This applies the plugins defined in the root file
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 }
@@ -42,12 +41,14 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.google.android.material)
-    implementation(libs.androidx.constraintlayout)
+    implementation(libs.core) // <-- ADDED this line
+    implementation(libs.core.ktx)
+    implementation(libs.appcompat)
+    implementation(libs.material)
+    implementation(libs.constraintlayout)
+    implementation(libs.preference.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.espresso.core)
 }
