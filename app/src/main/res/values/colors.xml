@@ -4,4 +4,14 @@
     <color name="white">#FFFFFFFF</color>
     <color name="text_grey">#B3B3B3</color>
     <color name="digit_background">#1C1C1E</color>
+
+    <color name="picker_red">#FFFF5252</color>
+    <color name="picker_pink">#FFD81B60</color>
+    <color name="picker_purple">#FF7B1FA2</color>
+    <color name="picker_blue">#FF448AFF</color>
+    <color name="picker_cyan">#FF00BCD4</color>
+    <color name="picker_green">#FF4CAF50</color>
+    <color name="picker_lime">#FFCDDC39</color>
+    <color name="picker_yellow">#FFFFEB3B</color>
+    <color name="picker_orange">#FFFF9800</color>
 </resources>

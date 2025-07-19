@@ -28,10 +28,11 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/date_text_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
 
         <TextView android:id="@+id/hour1" style="@style/DigitStyle" tools:text="1"/>
         <TextView android:id="@+id/hour2" style="@style/DigitStyle" android:layout_marginStart="4dp" tools:text="2"/>
@@ -55,6 +56,7 @@
         android:layout_marginTop="16dp"
         android:textColor="@color/text_grey"
         android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/clock_container"

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
@@ -35,8 +36,9 @@ class MainActivity : AppCompatActivity() {
     private val UPDATE_INTERVAL_MS = 200L
     private val IDLE_DELAY_MS = 3 * 60 * 1000L
 
+    // Add the new date_color key to the listener
     private val settingsListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-        if (key == "show_date" || key == "clock_font" || key == "date_font" || key == "background_select") {
+        if (key == "show_date" || key == "clock_font" || key == "date_font" || key == "background_select" || key == "clock_size" || key == "date_size" || key == "clock_color" || key == "date_color") {
             applyAllSettings()
         }
     }
@@ -45,9 +47,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-
         setupFullScreen()
         keepScreenOn()
         startClock()
@@ -77,9 +77,16 @@ class MainActivity : AppCompatActivity() {
         binding.dateTextView.visibility = if (sharedPreferences.getBoolean("show_date", true)) View.VISIBLE else View.GONE
 
         val clockFontFile = sharedPreferences.getString("clock_font", "orbitron_regular.ttf")
-        loadAndApplyFont(clockFontFile, binding.hour1, binding.hour2, binding.minute1, binding.minute2, binding.second1, binding.second2)
+        val allDigitTextViews = listOf(binding.hour1, binding.hour2, binding.minute1, binding.minute2, binding.second1, binding.second2)
+        loadAndApplyFont(clockFontFile, allDigitTextViews)
+
         val dateFontFile = sharedPreferences.getString("date_font", "josefin_sans_regular.ttf")
-        loadAndApplyFont(dateFontFile, binding.dateTextView)
+        loadAndApplyFont(dateFontFile, listOf(binding.dateTextView))
+
+        val clockSize = sharedPreferences.getInt("clock_size", 50)
+        val dateSize = sharedPreferences.getInt("date_size", 18)
+        allDigitTextViews.forEach { it.setTextSize(TypedValue.COMPLEX_UNIT_SP, clockSize.toFloat()) }
+        binding.dateTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, dateSize.toFloat())
 
         val background = sharedPreferences.getString("background_select", "black")
         updateBackgroundAndTextColor(background)
@@ -92,18 +99,20 @@ class MainActivity : AppCompatActivity() {
         val greyColor = ContextCompat.getColor(this, R.color.text_grey)
         val digitBgColor = ContextCompat.getColor(this, R.color.digit_background)
 
+        // Get the user's selected colors, with defaults
+        val userClockColor = sharedPreferences.getInt("clock_color", whiteColor)
+        val userDateColor = sharedPreferences.getInt("date_color", greyColor)
+
         when (backgroundValue) {
             "white" -> {
                 binding.mainContainer.setBackgroundColor(whiteColor)
-                // Invert colors for readability on white
                 allDigitTextViews.forEach {
                     it.setTextColor(blackColor)
-                    it.setBackgroundColor(whiteColor) // Set digit background to white
+                    it.setBackgroundColor(whiteColor)
                 }
-                binding.dateTextView.setTextColor(blackColor)
+                binding.dateTextView.setTextColor(blackColor) // Always use black on a white background
             }
             "galaxy", "stars", "lab", "universe" -> {
-                // Set the appropriate background resource
                 val bgResId = when (backgroundValue) {
                     "galaxy" -> R.drawable.background_galaxy
                     "stars" -> R.drawable.stars
@@ -113,26 +122,24 @@ class MainActivity : AppCompatActivity() {
                 }
                 binding.mainContainer.setBackgroundResource(bgResId)
 
-                // Set standard text and digit background colors for dark themes
                 allDigitTextViews.forEach {
-                    it.setTextColor(whiteColor)
+                    it.setTextColor(userClockColor)
                     it.setBackgroundColor(digitBgColor)
                 }
-                binding.dateTextView.setTextColor(greyColor)
+                binding.dateTextView.setTextColor(userDateColor) // Use the user's selected date color
             }
             else -> { // "black" is the default
                 binding.mainContainer.setBackgroundColor(blackColor)
-                // Set standard text and digit background colors
                 allDigitTextViews.forEach {
-                    it.setTextColor(whiteColor)
+                    it.setTextColor(userClockColor)
                     it.setBackgroundColor(digitBgColor)
                 }
-                binding.dateTextView.setTextColor(greyColor)
+                binding.dateTextView.setTextColor(userDateColor) // Use the user's selected date color
             }
         }
     }
 
-    private fun loadAndApplyFont(fontFileName: String?, vararg textViews: TextView) {
+    private fun loadAndApplyFont(fontFileName: String?, textViews: List<TextView>) {
         if (fontFileName == null) return
         try {
             val fontName = fontFileName.substringBeforeLast(".")
@@ -152,7 +159,6 @@ class MainActivity : AppCompatActivity() {
         dimHandler.removeCallbacksAndMessages(null)
     }
 
-    // ... (All other functions are unchanged) ...
     private fun startClock() {
         val timeUpdater = object : Runnable {
             override fun run() {
