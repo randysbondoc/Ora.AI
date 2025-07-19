@@ -27,6 +27,9 @@ import java.io.File
 import java.io.FileOutputStream
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -61,6 +64,31 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
+        private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            } else {
+                Toast.makeText(requireContext(), "Permission denied to read photos", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        private fun launchPickerWithPermissionCheck() {
+            val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Manifest.permission.READ_MEDIA_IMAGES
+            } else {
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            }
+
+            when {
+                ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED -> {
+                    pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                }
+                else -> {
+                    requestPermissionLauncher.launch(permission)
+                }
+            }
+        }
+
         private fun copyImageToInternalStorage(uri: Uri): String? {
             return try {
                 val inputStream = requireActivity().contentResolver.openInputStream(uri)
@@ -78,12 +106,13 @@ class SettingsActivity : AppCompatActivity() {
 
         private val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPrefs, key ->
             when (key) {
-                "clock_font", "date_font" -> updateFontSummary(key)
+                "clock_font", "date_font", "ampm_font" -> updateFontSummary(key)
                 "time_format" -> {
                     updateAmPmSwitchState(sharedPrefs)
                     activity?.finish()
                 }
-                "show_ampm", "show_date", "clock_size", "date_size", "clock_color", "date_color", "ampm_size", "ampm_color" -> {
+                "show_ampm", "show_date", "clock_size", "date_size", "clock_color", "date_color", "ampm_size", "ampm_color",
+                "clock_shadow", "date_shadow", "ampm_shadow", "hide_button_delay" -> {
                     activity?.finish()
                 }
             }
@@ -95,6 +124,7 @@ class SettingsActivity : AppCompatActivity() {
             val backgroundPref = findPreference<ListPreference>("background_select")
             val clockFontPref = findPreference<Preference>("clock_font")
             val dateFontPref = findPreference<Preference>("date_font")
+            val ampmFontPref = findPreference<Preference>("ampm_font")
             val clockColorPref = findPreference<Preference>("clock_color")
             val dateColorPref = findPreference<Preference>("date_color")
             val ampmColorPref = findPreference<Preference>("ampm_color")
@@ -102,11 +132,12 @@ class SettingsActivity : AppCompatActivity() {
 
             updateFontSummary("clock_font")
             updateFontSummary("date_font")
+            updateFontSummary("ampm_font")
             updateAmPmSwitchState(preferenceManager.sharedPreferences)
 
             backgroundPref?.setOnPreferenceChangeListener { _, newValue ->
                 if (newValue == "custom") {
-                    pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    launchPickerWithPermissionCheck()
                     false
                 } else {
                     activity?.finish()
@@ -116,11 +147,13 @@ class SettingsActivity : AppCompatActivity() {
 
             clockFontPref?.setOnPreferenceClickListener { showFontSelectionDialog(title = "Select Clock Font", preferenceKey = "clock_font"); true }
             dateFontPref?.setOnPreferenceClickListener { showFontSelectionDialog(title = "Select Date Font", preferenceKey = "date_font"); true }
+            ampmFontPref?.setOnPreferenceClickListener { showFontSelectionDialog(title = "Select AM/PM Font", preferenceKey = "ampm_font"); true }
             clockColorPref?.setOnPreferenceClickListener { showColorSelectionDialog(title = "Select Clock Color", preferenceKey = "clock_color"); true }
             dateColorPref?.setOnPreferenceClickListener { showColorSelectionDialog(title = "Select Date Color", preferenceKey = "date_color"); true }
             ampmColorPref?.setOnPreferenceClickListener { showColorSelectionDialog(title = "Select AM/PM Color", preferenceKey = "ampm_color"); true }
             resetPref?.setOnPreferenceClickListener { showResetConfirmationDialog(); true }
         }
+
         private fun showResetConfirmationDialog() {
             AlertDialog.Builder(requireContext())
                 .setTitle("Reset Settings?")
@@ -132,15 +165,18 @@ class SettingsActivity : AppCompatActivity() {
                     addPreferencesFromResource(R.xml.root_preferences)
                     updateFontSummary("clock_font")
                     updateFontSummary("date_font")
+                    updateFontSummary("ampm_font")
                     updateAmPmSwitchState(sharedPrefs)
                 }
                 .setNegativeButton("Cancel", null)
                 .show()
         }
+
         private fun updateAmPmSwitchState(sharedPrefs: SharedPreferences?) {
             val is12HourFormat = sharedPrefs?.getString("time_format", "24h") == "12h"
             findPreference<SwitchPreferenceCompat>("show_ampm")?.isEnabled = is12HourFormat
         }
+
         private fun showColorSelectionDialog(title: String, preferenceKey: String) {
             val context = requireContext()
             val sharedPrefs = preferenceManager.sharedPreferences ?: return
@@ -156,6 +192,7 @@ class SettingsActivity : AppCompatActivity() {
             }
             dialog.show()
         }
+
         private fun showFontSelectionDialog(title: String, preferenceKey: String) {
             val context = requireContext()
             val sharedPrefs = preferenceManager.sharedPreferences ?: return
@@ -172,19 +209,27 @@ class SettingsActivity : AppCompatActivity() {
                 .setNegativeButton("Cancel", null)
                 .show()
         }
+
         private fun updateFontSummary(key: String?) {
             val preference = findPreference<Preference>(key ?: return) ?: return
             val sharedPrefs = preferenceManager.sharedPreferences ?: return
-            val defaultValue = if (key == "clock_font") "orbitron_regular.ttf" else "josefin_sans_regular.ttf"
-            val fontFileName = sharedPrefs.getString(key, defaultValue) ?: defaultValue
+            val defaultFont = when (key) {
+                "clock_font" -> "orbitron_regular.ttf"
+                "date_font" -> "josefin_sans_regular.ttf"
+                "ampm_font" -> "orbitron_regular.ttf"
+                else -> ""
+            }
+            val fontFileName = sharedPrefs.getString(key, defaultFont) ?: defaultFont
             val fontFileValues = resources.getStringArray(R.array.font_file_values)
             val fontDisplayNames = resources.getStringArray(R.array.font_display_names)
             val selectedIndex = fontFileValues.indexOf(fontFileName)
             val fontDisplayName = if (selectedIndex != -1) fontDisplayNames[selectedIndex] else "Default"
             preference.summary = fontDisplayName
         }
+
         override fun onResume() { super.onResume(); preferenceManager.sharedPreferences?.registerOnSharedPreferenceChangeListener(listener) }
         override fun onPause() { super.onPause(); preferenceManager.sharedPreferences?.unregisterOnSharedPreferenceChangeListener(listener) }
+
         private class FontAdapter(context: Context, displayNames: Array<String>, private val fileNames: Array<String>) : ArrayAdapter<String>(context, R.layout.list_item_font, displayNames) {
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val view = super.getView(position, convertView, parent) as TextView
@@ -206,6 +251,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean { onBackPressedDispatcher.onBackPressed(); return true }
+
     class ColorAdapter(context: Context, colors: List<Int>) : ArrayAdapter<Int>(context, R.layout.grid_item_color, colors) {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.grid_item_color, parent, false)

@@ -16,34 +16,74 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Settings"
         android:src="@drawable/ic_settings"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/text_grey"
-        android:contentDescription="Settings" />
+        app:tint="@color/text_grey" />
 
-    <LinearLayout
-        android:id="@+id/clock_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/date_text_view"
-        app:layout_constraintEnd_toEndOf="parent"
+    <TextView
+        android:id="@+id/hour1"
+        style="@style/DigitStyle"
+        app:layout_constraintEnd_toStartOf="@+id/hour2"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed">
+        app:layout_constraintTop_toTopOf="@+id/clock_vertical_guide"
+        app:layout_constraintBottom_toBottomOf="@id/clock_vertical_guide"
+        tools:text="1" />
+    <TextView
+        android:id="@+id/hour2"
+        style="@style/DigitStyle"
+        app:layout_constraintEnd_toStartOf="@+id/separator1"
+        app:layout_constraintStart_toEndOf="@+id/hour1"
+        app:layout_constraintTop_toTopOf="@+id/hour1"
+        tools:text="2" />
 
-        <TextView android:id="@+id/hour1" style="@style/DigitStyle" tools:text="1"/>
-        <TextView android:id="@+id/hour2" style="@style/DigitStyle" android:layout_marginStart="4dp" tools:text="2"/>
-        <TextView style="@style/SeparatorStyle" />
-        <TextView android:id="@+id/minute1" style="@style/DigitStyle" tools:text="2"/>
-        <TextView android:id="@+id/minute2" style="@style/DigitStyle" android:layout_marginStart="4dp" tools:text="0"/>
-        <TextView style="@style/SeparatorStyle" />
-        <TextView android:id="@+id/second1" style="@style/DigitStyle" tools:text="3"/>
-        <TextView android:id="@+id/second2" style="@style/DigitStyle" android:layout_marginStart="4dp" tools:text="5"/>
+    <TextView
+        android:id="@+id/separator1"
+        style="@style/SeparatorStyle"
+        app:layout_constraintEnd_toStartOf="@+id/minute1"
+        app:layout_constraintStart_toEndOf="@+id/hour2"
+        app:layout_constraintTop_toTopOf="@+id/hour1"
+        app:layout_constraintBottom_toBottomOf="@+id/hour1"/>
 
-    </LinearLayout>
+    <TextView
+        android:id="@+id/minute1"
+        style="@style/DigitStyle"
+        app:layout_constraintEnd_toStartOf="@+id/minute2"
+        app:layout_constraintStart_toEndOf="@+id/separator1"
+        app:layout_constraintTop_toTopOf="@+id/hour1"
+        tools:text="2" />
+    <TextView
+        android:id="@+id/minute2"
+        style="@style/DigitStyle"
+        app:layout_constraintEnd_toStartOf="@+id/separator2"
+        app:layout_constraintStart_toEndOf="@+id/minute1"
+        app:layout_constraintTop_toTopOf="@+id/hour1"
+        tools:text="0" />
+
+    <TextView
+        android:id="@+id/separator2"
+        style="@style/SeparatorStyle"
+        app:layout_constraintEnd_toStartOf="@+id/second1"
+        app:layout_constraintStart_toEndOf="@+id/minute2"
+        app:layout_constraintTop_toTopOf="@+id/hour1"
+        app:layout_constraintBottom_toBottomOf="@+id/hour1" />
+
+    <TextView
+        android:id="@+id/second1"
+        style="@style/DigitStyle"
+        app:layout_constraintEnd_toStartOf="@+id/second2"
+        app:layout_constraintStart_toEndOf="@+id/separator2"
+        app:layout_constraintTop_toTopOf="@+id/hour1"
+        tools:text="3" />
+    <TextView
+        android:id="@+id/second2"
+        style="@style/DigitStyle"
+        app:layout_constraintEnd_toStartOf="@+id/ampm_text_view"
+        app:layout_constraintStart_toEndOf="@+id/second1"
+        app:layout_constraintTop_toTopOf="@+id/hour1"
+        tools:text="5" />
 
     <TextView
         android:id="@+id/ampm_text_view"
@@ -52,21 +92,30 @@
         android:layout_marginStart="8dp"
         android:textColor="@color/white"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/clock_container"
-        app:layout_constraintStart_toEndOf="@+id/clock_container"
+        app:layout_constraintBaseline_toBaselineOf="@id/second2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/second2"
         tools:text="PM" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/clock_vertical_guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
 
     <TextView
         android:id="@+id/date_text_view"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:textColor="@color/text_grey"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/clock_container"
+        app:layout_constraintTop_toBottomOf="@id/hour1"
+        app:layout_constraintWidth_percent="0.8"
         tools:text="July 19, 2025" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
