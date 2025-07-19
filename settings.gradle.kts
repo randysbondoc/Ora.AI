@@ -10,7 +10,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        // NO JITPACK
     }
 }
 rootProject.name = "Ora"

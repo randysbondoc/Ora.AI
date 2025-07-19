@@ -3,6 +3,8 @@ package tech.rb.ora
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -20,6 +22,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.preference.PreferenceManager
 import tech.rb.ora.databinding.ActivityMainBinding
+import java.io.File
+import java.io.InputStream
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -39,7 +43,7 @@ class MainActivity : AppCompatActivity() {
     private val IDLE_DELAY_MS = 3 * 60 * 1000L
 
     private val settingsListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-        if (key?.startsWith("ampm_") == true || key in listOf("show_date", "clock_font", "date_font", "background_select", "clock_size", "date_size", "clock_color", "date_color", "time_format", "show_ampm")) {
+        if (key != null) {
             applyAllSettings()
         }
     }
@@ -68,11 +72,46 @@ class MainActivity : AppCompatActivity() {
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(settingsListener)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        timeHandler.removeCallbacksAndMessages(null)
+        dimHandler.removeCallbacksAndMessages(null)
+    }
+
     private fun setupSettingsButton() {
         binding.settingsButton.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun startClock() {
+        val timeUpdater = object : Runnable {
+            override fun run() {
+                val now = LocalDateTime.now()
+
+                val is12Hour = sharedPreferences.getString("time_format", "24h") == "12h"
+                val timeFormatter = if (is12Hour) formatter12h else formatter24h
+                val timeString = now.format(timeFormatter)
+
+                updateDigit(binding.hour1, timeString[0].toString())
+                updateDigit(binding.hour2, timeString[1].toString())
+                updateDigit(binding.minute1, timeString[2].toString())
+                updateDigit(binding.minute2, timeString[3].toString())
+                updateDigit(binding.second1, timeString[4].toString())
+                updateDigit(binding.second2, timeString[5].toString())
+                binding.dateTextView.text = now.format(dateFormatter)
+
+                val showAmPm = sharedPreferences.getBoolean("show_ampm", true)
+                binding.ampmTextView.visibility = if (is12Hour && showAmPm) View.VISIBLE else View.GONE
+                if (is12Hour && showAmPm) {
+                    binding.ampmTextView.text = now.format(formatterAmPm)
+                }
+
+                timeHandler.postDelayed(this, UPDATE_INTERVAL_MS)
+            }
+        }
+        timeHandler.post(timeUpdater)
     }
 
     private fun applyAllSettings() {
@@ -111,13 +150,42 @@ class MainActivity : AppCompatActivity() {
         when (backgroundValue) {
             "white" -> {
                 binding.mainContainer.setBackgroundColor(whiteColor)
-                allDigitTextViews.forEach { it.setTextColor(blackColor); it.setBackgroundColor(whiteColor) }
-                binding.ampmTextView.setTextColor(blackColor)
+                (allDigitTextViews + binding.ampmTextView).forEach { it.setTextColor(blackColor) }
                 binding.dateTextView.setTextColor(blackColor)
+                allDigitTextViews.forEach { it.setBackgroundColor(whiteColor) }
+            }
+            "custom" -> {
+                val path = sharedPreferences.getString("custom_background_path", null)
+                if (path != null) {
+                    try {
+                        val imageFile = File(path)
+                        val drawable = Drawable.createFromPath(imageFile.absolutePath)
+                        binding.mainContainer.background = drawable
+                    } catch (e: Exception) {
+                        Log.e("MainActivity", "Failed to load custom background from path", e)
+                        binding.mainContainer.setBackgroundColor(blackColor)
+                    }
+                } else {
+                    binding.mainContainer.setBackgroundColor(blackColor)
+                }
+
+                allDigitTextViews.forEach { it.setTextColor(userClockColor); it.setBackgroundColor(digitBgColor) }
+                binding.ampmTextView.setTextColor(userAmPmColor)
+                binding.dateTextView.setTextColor(userDateColor)
             }
             else -> {
-                val bgResId = when (backgroundValue) { "galaxy" -> R.drawable.background_galaxy; "stars" -> R.drawable.stars; "lab" -> R.drawable.lab; "universe" -> R.drawable.universe; else -> R.color.black }
-                if (backgroundValue == "black") binding.mainContainer.setBackgroundColor(blackColor) else binding.mainContainer.setBackgroundResource(bgResId)
+                val bgResId = when (backgroundValue) {
+                    "galaxy" -> R.drawable.background_galaxy
+                    "stars" -> R.drawable.stars
+                    "lab" -> R.drawable.lab
+                    "universe" -> R.drawable.universe
+                    else -> R.color.black
+                }
+                if (backgroundValue == "black") {
+                    binding.mainContainer.setBackgroundColor(blackColor)
+                } else {
+                    binding.mainContainer.setBackgroundResource(bgResId)
+                }
 
                 allDigitTextViews.forEach { it.setTextColor(userClockColor); it.setBackgroundColor(digitBgColor) }
                 binding.ampmTextView.setTextColor(userAmPmColor)
@@ -138,37 +206,6 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Log.e("MainActivity", "Could not load font: $fontFileName", e)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        timeHandler.removeCallbacksAndMessages(null)
-        dimHandler.removeCallbacksAndMessages(null)
-    }
-
-    private fun startClock() {
-        val timeUpdater = object : Runnable {
-            override fun run() {
-                val now = LocalDateTime.now()
-                val is12Hour = sharedPreferences.getString("time_format", "24h") == "12h"
-                val timeFormatter = if (is12Hour) formatter12h else formatter24h
-                val timeString = now.format(timeFormatter)
-                updateDigit(binding.hour1, timeString[0].toString())
-                updateDigit(binding.hour2, timeString[1].toString())
-                updateDigit(binding.minute1, timeString[2].toString())
-                updateDigit(binding.minute2, timeString[3].toString())
-                updateDigit(binding.second1, timeString[4].toString())
-                updateDigit(binding.second2, timeString[5].toString())
-                binding.dateTextView.text = now.format(dateFormatter)
-                val showAmPm = sharedPreferences.getBoolean("show_ampm", true)
-                binding.ampmTextView.visibility = if (is12Hour && showAmPm) View.VISIBLE else View.GONE
-                if (is12Hour && showAmPm) {
-                    binding.ampmTextView.text = now.format(formatterAmPm)
-                }
-                timeHandler.postDelayed(this, UPDATE_INTERVAL_MS)
-            }
-        }
-        timeHandler.post(timeUpdater)
     }
 
     private fun updateDigit(textView: TextView, newDigit: String) {

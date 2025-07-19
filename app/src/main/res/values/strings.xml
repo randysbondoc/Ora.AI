@@ -11,22 +11,30 @@
         <item>lora_regular.ttf</item> <item>montserrat_regular.ttf</item> <item>anton_regular.ttf</item>
         <item>bitcount_variable.ttf</item>
     </string-array>
-    <string-array name="background_names">
-        <item>Amoled Black</item> <item>Plain White</item> <item>Galaxy</item>
-        <item>Starry Sky</item> <item>Laboratory</item> <item>Universe</item>
-    </string-array>
-    <string-array name="background_values">
-        <item>black</item> <item>white</item> <item>galaxy</item>
-        <item>stars</item> <item>lab</item> <item>universe</item>
-    </string-array>
-
     <string-array name="time_format_names">
-        <item>24-Hour</item>
-        <item>12-Hour</item>
+        <item>24-Hour</item> <item>12-Hour</item>
     </string-array>
     <string-array name="time_format_values">
-        <item>24h</item>
-        <item>12h</item>
+        <item>24h</item> <item>12h</item>
+    </string-array>
+
+    <string-array name="background_names">
+        <item>Amoled Black</item>
+        <item>Plain White</item>
+        <item>Galaxy</item>
+        <item>Starry Sky</item>
+        <item>Laboratory</item>
+        <item>Universe</item>
+        <item>Custom from Device...</item>
+    </string-array>
+    <string-array name="background_values">
+        <item>black</item>
+        <item>white</item>
+        <item>galaxy</item>
+        <item>stars</item>
+        <item>lab</item>
+        <item>universe</item>
+        <item>custom</item>
     </string-array>
 
 </resources>

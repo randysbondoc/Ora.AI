@@ -5,6 +5,7 @@ minSdk = "26"
 targetSdk = "34"
 androidGradlePlugin = "8.5.0"
 kotlin = "1.9.23"
+activityKtx = "1.9.0"
 
 # App Dependencies
 appCompat = "1.7.1"
@@ -12,6 +13,7 @@ core = "1.13.1"
 constraintLayout = "2.1.4"
 material = "1.12.0"
 preferenceKtx = "1.2.1"
+coil = "2.6.0"
 
 # Testing
 junit = "4.13.2"
@@ -19,12 +21,16 @@ androidxJunit = "1.2.1"
 espressoCore = "3.6.1"
 
 [libraries]
+activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appCompat" }
 core = { group = "androidx.core", name = "core", version.ref = "core" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintLayout" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "preferenceKtx" }
+coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
+
+# Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxJunit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
