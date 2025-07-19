@@ -36,18 +36,25 @@
 
         <TextView android:id="@+id/hour1" style="@style/DigitStyle" tools:text="1"/>
         <TextView android:id="@+id/hour2" style="@style/DigitStyle" android:layout_marginStart="4dp" tools:text="2"/>
-
         <TextView style="@style/SeparatorStyle" />
-
         <TextView android:id="@+id/minute1" style="@style/DigitStyle" tools:text="2"/>
         <TextView android:id="@+id/minute2" style="@style/DigitStyle" android:layout_marginStart="4dp" tools:text="0"/>
-
         <TextView style="@style/SeparatorStyle" />
-
         <TextView android:id="@+id/second1" style="@style/DigitStyle" tools:text="3"/>
         <TextView android:id="@+id/second2" style="@style/DigitStyle" android:layout_marginStart="4dp" tools:text="5"/>
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/ampm_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/clock_container"
+        app:layout_constraintStart_toEndOf="@+id/clock_container"
+        tools:text="PM" />
 
     <TextView
         android:id="@+id/date_text_view"

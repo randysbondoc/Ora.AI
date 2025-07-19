@@ -5,13 +5,42 @@
     <color name="text_grey">#B3B3B3</color>
     <color name="digit_background">#1C1C1E</color>
 
-    <color name="picker_red">#FFFF5252</color>
-    <color name="picker_pink">#FFD81B60</color>
-    <color name="picker_purple">#FF7B1FA2</color>
-    <color name="picker_blue">#FF448AFF</color>
-    <color name="picker_cyan">#FF00BCD4</color>
-    <color name="picker_green">#FF4CAF50</color>
-    <color name="picker_lime">#FFCDDC39</color>
-    <color name="picker_yellow">#FFFFEB3B</color>
-    <color name="picker_orange">#FFFF9800</color>
+    <color name="md_grey_300">#E0E0E0</color>
+    <color name="md_grey_500">#9E9E9E</color>
+    <color name="md_grey_700">#616161</color>
+
+    <color name="md_red_300">#E57373</color>
+    <color name="md_red_500">#F44336</color>
+    <color name="md_red_700">#D32F2F</color>
+    <color name="md_pink_300">#F06292</color>
+    <color name="md_pink_500">#E91E63</color>
+    <color name="md_pink_700">#C2185B</color>
+
+    <color name="md_purple_300">#BA68C8</color>
+    <color name="md_purple_500">#9C27B0</color>
+    <color name="md_purple_700">#7B1FA2</color>
+    <color name="md_deep_purple_500">#673AB7</color>
+
+    <color name="md_indigo_500">#3F51B5</color>
+    <color name="md_blue_300">#64B5F6</color>
+    <color name="md_blue_500">#2196F3</color>
+    <color name="md_blue_700">#1976D2</color>
+    <color name="md_light_blue_500">#03A9F4</color>
+    <color name="md_cyan_500">#00BCD4</color>
+
+    <color name="md_teal_500">#009688</color>
+    <color name="md_green_300">#81C784</color>
+    <color name="md_green_500">#4CAF50</color>
+    <color name="md_green_700">#388E3C</color>
+    <color name="md_light_green_500">#8BC34A</color>
+    <color name="md_lime_500">#CDDC39</color>
+
+    <color name="md_yellow_500">#FFEB3B</color>
+    <color name="md_amber_500">#FFC107</color>
+    <color name="md_orange_500">#FF9800</color>
+    <color name="md_deep_orange_500">#FF5722</color>
+
+    <color name="neon_pink">#FF00FF</color>
+    <color name="neon_green">#39FF14</color>
+    <color name="neon_blue">#00FFFF</color>
 </resources>

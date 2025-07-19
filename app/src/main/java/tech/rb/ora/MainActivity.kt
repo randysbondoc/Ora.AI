@@ -29,16 +29,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPreferences: SharedPreferences
 
+    private val dateFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.getDefault())
+    private val formatter24h = DateTimeFormatter.ofPattern("HHmmss")
+    private val formatter12h = DateTimeFormatter.ofPattern("hhmmss")
+    private val formatterAmPm = DateTimeFormatter.ofPattern("a", Locale.getDefault())
     private val timeHandler = Handler(Looper.getMainLooper())
     private val dimHandler = Handler(Looper.getMainLooper())
-    private val timeFormatter = DateTimeFormatter.ofPattern("HHmmss")
-    private val dateFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.getDefault())
     private val UPDATE_INTERVAL_MS = 200L
     private val IDLE_DELAY_MS = 3 * 60 * 1000L
 
-    // Add the new date_color key to the listener
     private val settingsListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-        if (key == "show_date" || key == "clock_font" || key == "date_font" || key == "background_select" || key == "clock_size" || key == "date_size" || key == "clock_color" || key == "date_color") {
+        if (key?.startsWith("ampm_") == true || key in listOf("show_date", "clock_font", "date_font", "background_select", "clock_size", "date_size", "clock_color", "date_color", "time_format", "show_ampm")) {
             applyAllSettings()
         }
     }
@@ -48,6 +49,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+
         setupFullScreen()
         keepScreenOn()
         startClock()
@@ -76,17 +78,20 @@ class MainActivity : AppCompatActivity() {
     private fun applyAllSettings() {
         binding.dateTextView.visibility = if (sharedPreferences.getBoolean("show_date", true)) View.VISIBLE else View.GONE
 
-        val clockFontFile = sharedPreferences.getString("clock_font", "orbitron_regular.ttf")
         val allDigitTextViews = listOf(binding.hour1, binding.hour2, binding.minute1, binding.minute2, binding.second1, binding.second2)
-        loadAndApplyFont(clockFontFile, allDigitTextViews)
+
+        val clockFontFile = sharedPreferences.getString("clock_font", "orbitron_regular.ttf")
+        loadAndApplyFont(clockFontFile, allDigitTextViews + binding.ampmTextView)
 
         val dateFontFile = sharedPreferences.getString("date_font", "josefin_sans_regular.ttf")
         loadAndApplyFont(dateFontFile, listOf(binding.dateTextView))
 
         val clockSize = sharedPreferences.getInt("clock_size", 50)
         val dateSize = sharedPreferences.getInt("date_size", 18)
+        val ampmSize = sharedPreferences.getInt("ampm_size", 24)
         allDigitTextViews.forEach { it.setTextSize(TypedValue.COMPLEX_UNIT_SP, clockSize.toFloat()) }
         binding.dateTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, dateSize.toFloat())
+        binding.ampmTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, ampmSize.toFloat())
 
         val background = sharedPreferences.getString("background_select", "black")
         updateBackgroundAndTextColor(background)
@@ -99,42 +104,24 @@ class MainActivity : AppCompatActivity() {
         val greyColor = ContextCompat.getColor(this, R.color.text_grey)
         val digitBgColor = ContextCompat.getColor(this, R.color.digit_background)
 
-        // Get the user's selected colors, with defaults
         val userClockColor = sharedPreferences.getInt("clock_color", whiteColor)
         val userDateColor = sharedPreferences.getInt("date_color", greyColor)
+        val userAmPmColor = sharedPreferences.getInt("ampm_color", whiteColor)
 
         when (backgroundValue) {
             "white" -> {
                 binding.mainContainer.setBackgroundColor(whiteColor)
-                allDigitTextViews.forEach {
-                    it.setTextColor(blackColor)
-                    it.setBackgroundColor(whiteColor)
-                }
-                binding.dateTextView.setTextColor(blackColor) // Always use black on a white background
+                allDigitTextViews.forEach { it.setTextColor(blackColor); it.setBackgroundColor(whiteColor) }
+                binding.ampmTextView.setTextColor(blackColor)
+                binding.dateTextView.setTextColor(blackColor)
             }
-            "galaxy", "stars", "lab", "universe" -> {
-                val bgResId = when (backgroundValue) {
-                    "galaxy" -> R.drawable.background_galaxy
-                    "stars" -> R.drawable.stars
-                    "lab" -> R.drawable.lab
-                    "universe" -> R.drawable.universe
-                    else -> R.color.black
-                }
-                binding.mainContainer.setBackgroundResource(bgResId)
+            else -> {
+                val bgResId = when (backgroundValue) { "galaxy" -> R.drawable.background_galaxy; "stars" -> R.drawable.stars; "lab" -> R.drawable.lab; "universe" -> R.drawable.universe; else -> R.color.black }
+                if (backgroundValue == "black") binding.mainContainer.setBackgroundColor(blackColor) else binding.mainContainer.setBackgroundResource(bgResId)
 
-                allDigitTextViews.forEach {
-                    it.setTextColor(userClockColor)
-                    it.setBackgroundColor(digitBgColor)
-                }
-                binding.dateTextView.setTextColor(userDateColor) // Use the user's selected date color
-            }
-            else -> { // "black" is the default
-                binding.mainContainer.setBackgroundColor(blackColor)
-                allDigitTextViews.forEach {
-                    it.setTextColor(userClockColor)
-                    it.setBackgroundColor(digitBgColor)
-                }
-                binding.dateTextView.setTextColor(userDateColor) // Use the user's selected date color
+                allDigitTextViews.forEach { it.setTextColor(userClockColor); it.setBackgroundColor(digitBgColor) }
+                binding.ampmTextView.setTextColor(userAmPmColor)
+                binding.dateTextView.setTextColor(userDateColor)
             }
         }
     }
@@ -163,6 +150,8 @@ class MainActivity : AppCompatActivity() {
         val timeUpdater = object : Runnable {
             override fun run() {
                 val now = LocalDateTime.now()
+                val is12Hour = sharedPreferences.getString("time_format", "24h") == "12h"
+                val timeFormatter = if (is12Hour) formatter12h else formatter24h
                 val timeString = now.format(timeFormatter)
                 updateDigit(binding.hour1, timeString[0].toString())
                 updateDigit(binding.hour2, timeString[1].toString())
@@ -171,6 +160,11 @@ class MainActivity : AppCompatActivity() {
                 updateDigit(binding.second1, timeString[4].toString())
                 updateDigit(binding.second2, timeString[5].toString())
                 binding.dateTextView.text = now.format(dateFormatter)
+                val showAmPm = sharedPreferences.getBoolean("show_ampm", true)
+                binding.ampmTextView.visibility = if (is12Hour && showAmPm) View.VISIBLE else View.GONE
+                if (is12Hour && showAmPm) {
+                    binding.ampmTextView.text = now.format(formatterAmPm)
+                }
                 timeHandler.postDelayed(this, UPDATE_INTERVAL_MS)
             }
         }

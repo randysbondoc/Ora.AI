@@ -1,57 +1,30 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory app:title="Clock Settings">
+        <ListPreference app:key="time_format" app:title="Time Format" app:summary="%s" app:entries="@array/time_format_names" app:entryValues="@array/time_format_values" app:defaultValue="24h" />
+        <SwitchPreferenceCompat app:key="show_ampm" app:title="Show AM/PM" app:summary="Display AM/PM indicator for 12-hour format" app:defaultValue="true"/>
+        <SeekBarPreference app:key="ampm_size" app:title="AM/PM Text Size" app:defaultValue="24" android:min="10" android:max="50" app:showSeekBarValue="true" app:dependency="show_ampm" />
+        <Preference app:key="ampm_color" app:title="AM/PM Text Color" app:summary="Change the color of the AM/PM display" app:dependency="show_ampm" />
+        <Preference app:key="clock_font" app:title="Clock Font" />
+        <SeekBarPreference app:key="clock_size" app:title="Clock Text Size" app:defaultValue="50" android:min="30" android:max="100" app:showSeekBarValue="true" />
+        <Preference app:key="clock_color" app:title="Clock Text Color" app:summary="Change the color of the time display" />
+    </PreferenceCategory>
+    <PreferenceCategory app:title="Date Settings">
+        <SwitchPreferenceCompat app:key="show_date" app:title="Show Date" app:summary="Display the date below the clock" app:defaultValue="true" />
+        <Preference app:key="date_font" app:title="Date Font" />
+        <SeekBarPreference app:key="date_size" app:title="Date Text Size" app:defaultValue="18" android:min="12" android:max="40" app:showSeekBarValue="true" />
+        <Preference app:key="date_color" app:title="Date Text Color" app:summary="Change the color of the date display" />
+    </PreferenceCategory>
     <PreferenceCategory app:title="Display">
-        <SwitchPreferenceCompat
-            app:key="show_date"
-            app:title="Show Date"
-            app:summary="Display the date below the clock"
-            app:defaultValue="true" />
-        <ListPreference
-            app:key="background_select"
-            app:title="Background Style"
-            app:summary="%s"
-            app:entries="@array/background_names"
-            app:entryValues="@array/background_values"
-            app:defaultValue="black" />
+        <ListPreference app:key="background_select" app:title="Background Style" app:summary="%s" app:entries="@array/background_names" app:entryValues="@array/background_values" app:defaultValue="black" />
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Sizing">
-        <SeekBarPreference
-            app:key="clock_size"
-            app:title="Clock Text Size"
-            app:defaultValue="50"
-            android:min="30"
-            android:max="100"
-            app:showSeekBarValue="true" />
-        <SeekBarPreference
-            app:key="date_size"
-            app:title="Date Text Size"
-            app:defaultValue="18"
-            android:min="12"
-            android:max="40"
-            app:showSeekBarValue="true" />
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="Colors">
+    <PreferenceCategory app:title="Advanced">
         <Preference
-            app:key="clock_color"
-            app:title="Clock Text Color"
-            app:summary="Change the color of the time display" />
-
-        <Preference
-            app:key="date_color"
-            app:title="Date Text Color"
-            app:summary="Change the color of the date display" />
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="Fonts">
-        <Preference
-            app:key="clock_font"
-            app:title="Clock Font" />
-        <Preference
-            app:key="date_font"
-            app:title="Date Font" />
+            app:key="reset_settings"
+            app:title="Reset to Default"
+            app:summary="Restore all visual settings to their original state" />
     </PreferenceCategory>
 
 </PreferenceScreen>

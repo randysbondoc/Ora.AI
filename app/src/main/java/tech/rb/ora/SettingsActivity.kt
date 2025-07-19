@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreferenceCompat
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -35,13 +36,14 @@ class SettingsActivity : AppCompatActivity() {
 
     class SettingsFragment : PreferenceFragmentCompat() {
 
-        // Updated the listener to handle the new date_color key
-        private val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        private val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPrefs, key ->
             when (key) {
-                "clock_font", "date_font" -> {
-                    updateFontSummary(key)
+                "clock_font", "date_font" -> updateFontSummary(key)
+                "time_format" -> {
+                    updateAmPmSwitchState(sharedPrefs)
+                    activity?.finish()
                 }
-                "background_select", "clock_size", "date_size", "clock_color", "date_color" -> {
+                "show_ampm", "show_date", "background_select", "clock_size", "date_size", "clock_color", "date_color", "ampm_size", "ampm_color" -> {
                     activity?.finish()
                 }
             }
@@ -53,10 +55,13 @@ class SettingsActivity : AppCompatActivity() {
             val clockFontPref = findPreference<Preference>("clock_font")
             val dateFontPref = findPreference<Preference>("date_font")
             val clockColorPref = findPreference<Preference>("clock_color")
-            val dateColorPref = findPreference<Preference>("date_color") // Find the new preference
+            val dateColorPref = findPreference<Preference>("date_color")
+            val ampmColorPref = findPreference<Preference>("ampm_color")
+            val resetPref = findPreference<Preference>("reset_settings")
 
             updateFontSummary("clock_font")
             updateFontSummary("date_font")
+            updateAmPmSwitchState(preferenceManager.sharedPreferences)
 
             clockFontPref?.setOnPreferenceClickListener {
                 showFontSelectionDialog(title = "Select Clock Font", preferenceKey = "clock_font")
@@ -70,11 +75,40 @@ class SettingsActivity : AppCompatActivity() {
                 showColorSelectionDialog(title = "Select Clock Color", preferenceKey = "clock_color")
                 true
             }
-            // Set the click listener for the new date color preference
             dateColorPref?.setOnPreferenceClickListener {
                 showColorSelectionDialog(title = "Select Date Color", preferenceKey = "date_color")
                 true
             }
+            ampmColorPref?.setOnPreferenceClickListener {
+                showColorSelectionDialog(title = "Select AM/PM Color", preferenceKey = "ampm_color")
+                true
+            }
+            resetPref?.setOnPreferenceClickListener {
+                showResetConfirmationDialog()
+                true
+            }
+        }
+
+        private fun showResetConfirmationDialog() {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Reset Settings?")
+                .setMessage("Are you sure you want to restore all settings to their default values?")
+                .setPositiveButton("Reset") { _, _ ->
+                    val sharedPrefs = preferenceManager.sharedPreferences ?: return@setPositiveButton
+                    sharedPrefs.edit().clear().apply()
+                    preferenceScreen.removeAll()
+                    addPreferencesFromResource(R.xml.root_preferences)
+                    updateFontSummary("clock_font")
+                    updateFontSummary("date_font")
+                    updateAmPmSwitchState(sharedPrefs)
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
+
+        private fun updateAmPmSwitchState(sharedPrefs: SharedPreferences?) {
+            val is12HourFormat = sharedPrefs?.getString("time_format", "24h") == "12h"
+            findPreference<SwitchPreferenceCompat>("show_ampm")?.isEnabled = is12HourFormat
         }
 
         private fun showColorSelectionDialog(title: String, preferenceKey: String) {
@@ -83,19 +117,39 @@ class SettingsActivity : AppCompatActivity() {
 
             val colorGridView = LayoutInflater.from(context).inflate(R.layout.dialog_color_picker, null) as GridView
 
-            // Added black to the color palette
             val colors = listOf(
                 ContextCompat.getColor(context, R.color.white),
-                ContextCompat.getColor(context, R.color.picker_red),
-                ContextCompat.getColor(context, R.color.picker_pink),
-                ContextCompat.getColor(context, R.color.picker_purple),
-                ContextCompat.getColor(context, R.color.picker_blue),
-                ContextCompat.getColor(context, R.color.picker_cyan),
-                ContextCompat.getColor(context, R.color.picker_green),
-                ContextCompat.getColor(context, R.color.picker_lime),
-                ContextCompat.getColor(context, R.color.picker_yellow),
-                ContextCompat.getColor(context, R.color.picker_orange),
-                ContextCompat.getColor(context, R.color.black)
+                ContextCompat.getColor(context, R.color.md_grey_500),
+                ContextCompat.getColor(context, R.color.black),
+                ContextCompat.getColor(context, R.color.md_red_300),
+                ContextCompat.getColor(context, R.color.md_red_500),
+                ContextCompat.getColor(context, R.color.md_red_700),
+                ContextCompat.getColor(context, R.color.md_pink_300),
+                ContextCompat.getColor(context, R.color.md_pink_500),
+                ContextCompat.getColor(context, R.color.md_pink_700),
+                ContextCompat.getColor(context, R.color.md_purple_300),
+                ContextCompat.getColor(context, R.color.md_purple_500),
+                ContextCompat.getColor(context, R.color.md_purple_700),
+                ContextCompat.getColor(context, R.color.md_deep_purple_500),
+                ContextCompat.getColor(context, R.color.md_indigo_500),
+                ContextCompat.getColor(context, R.color.md_blue_300),
+                ContextCompat.getColor(context, R.color.md_blue_500),
+                ContextCompat.getColor(context, R.color.md_blue_700),
+                ContextCompat.getColor(context, R.color.md_light_blue_500),
+                ContextCompat.getColor(context, R.color.md_cyan_500),
+                ContextCompat.getColor(context, R.color.md_teal_500),
+                ContextCompat.getColor(context, R.color.md_green_300),
+                ContextCompat.getColor(context, R.color.md_green_500),
+                ContextCompat.getColor(context, R.color.md_green_700),
+                ContextCompat.getColor(context, R.color.md_light_green_500),
+                ContextCompat.getColor(context, R.color.md_lime_500),
+                ContextCompat.getColor(context, R.color.md_yellow_500),
+                ContextCompat.getColor(context, R.color.md_amber_500),
+                ContextCompat.getColor(context, R.color.md_orange_500),
+                ContextCompat.getColor(context, R.color.md_deep_orange_500),
+                ContextCompat.getColor(context, R.color.neon_pink),
+                ContextCompat.getColor(context, R.color.neon_green),
+                ContextCompat.getColor(context, R.color.neon_blue)
             )
 
             val adapter = ColorAdapter(context, colors)
@@ -153,7 +207,7 @@ class SettingsActivity : AppCompatActivity() {
             super.onPause()
             preferenceManager.sharedPreferences?.unregisterOnSharedPreferenceChangeListener(listener)
         }
-        private class FontAdapter(context: Context, private val displayNames: Array<String>, private val fileNames: Array<String>) : ArrayAdapter<String>(context, R.layout.list_item_font, displayNames) {
+        private class FontAdapter(context: Context, displayNames: Array<String>, private val fileNames: Array<String>) : ArrayAdapter<String>(context, R.layout.list_item_font, displayNames) {
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val view = super.getView(position, convertView, parent) as TextView
                 val fontFileName = fileNames[position]
@@ -184,7 +238,6 @@ class SettingsActivity : AppCompatActivity() {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.grid_item_color, parent, false)
             val color = colors[position]
-            // We need to mutate the drawable to change its color, otherwise all circles will have the same color
             val drawable = ContextCompat.getDrawable(context, R.drawable.color_preview_circle)?.mutate() as GradientDrawable
             drawable.setColor(color)
             view.background = drawable
