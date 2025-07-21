@@ -2,13 +2,16 @@
 
 Ora is a modern, full-screen clock designed for elegance, functionality, and deep personalization. Turn any device into a stunning desk clock, a nightstand companion, or a focused work timer. You have complete control to create a look that is uniquely yours. Full customization is at your fingertips, including the ability to select your own wallpaper from your device's gallery. Ora is on a path of continuous development. Future updates will bring exciting new functions and features, including planned integration with Google Gemini and Google Assistant.
 
-<p align="center">
-  <img src="./assets/ora_logo.png" alt="Ora Logo" width="150"/>
-</p>
-
-<p align="center">
-  <img src="./assets/ora_screenshot_v1_6.png" alt="Ora Screenshot" width="300"/>
-</p>
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="./assets/ora_logo.png" alt="Ora Logo" width="200"/>
+    </td>
+    <td align="center">
+      <img src="./assets/ora_screenshot_v1_6.png" alt="Ora Screenshot" width="400"/>
+    </td>
+  </tr>
+</table>
 
 ---
 
@@ -54,8 +57,8 @@ Ora is a modern, full-screen clock designed for elegance, functionality, and dee
 * Implemented runtime permissions for media access and secure local copying of the image.
 
 ### Version 1.3
-* Added 12/24 hour time format selection and AM/PM toggle. 
-* Added separate size and color customization for the AM/PM text. 
+* Added 12/24 hour time format selection and AM/PM toggle.
+* Added separate size and color customization for the AM/PM text.
 * Added a "Reset to Default" option.
 
 (Older versions omitted for brevity)
