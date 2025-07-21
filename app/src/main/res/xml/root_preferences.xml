@@ -1,85 +1,65 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="Clock Settings">
+    <PreferenceCategory app:title="Preset Management">
         <ListPreference
-            app:key="time_format"
-            app:title="Time Format"
-            app:summary="%s"
-            app:entries="@array/time_format_names"
-            app:entryValues="@array/time_format_values"
-            app:defaultValue="24h" />
-        <SwitchPreferenceCompat
-            app:key="show_ampm"
-            app:title="Show AM/PM"
-            app:summary="Display AM/PM indicator for 12-hour format"
-            app:defaultValue="true"/>
-        <SeekBarPreference
-            app:key="ampm_size"
-            app:title="AM/PM Text Size"
-            app:defaultValue="24"
-            android:min="10"
-            android:max="50"
-            app:showSeekBarValue="true"
-            app:dependency="show_ampm" />
+            app:key="apply_preset"
+            app:title="Apply a Preset"
+            app:summary="Select a saved style to apply"
+            app:dialogTitle="Apply which preset?"/>
         <Preference
-            app:key="ampm_color"
-            app:title="AM/PM Text Color"
-            app:summary="Change the color of the AM/PM display"
-            app:dependency="show_ampm" />
-        <SwitchPreferenceCompat
-            app:key="ampm_shadow"
-            app:title="AM/PM Text Shadow"
-            app:defaultValue="true"
-            app:dependency="show_ampm" />
+            app:key="save_preset"
+            app:title="Save Current Style to Preset" />
         <Preference
-            app:key="clock_font"
-            app:title="Clock Font" />
-        <SeekBarPreference
-            app:key="clock_size"
-            app:title="Clock Text Size"
-            app:defaultValue="50"
-            android:min="30"
-            android:max="100"
-            app:showSeekBarValue="true" />
-        <Preference
-            app:key="clock_color"
-            app:title="Clock Text Color"
-            app:summary="Change the color of the time display" />
-        <SwitchPreferenceCompat
-            app:key="clock_shadow"
-            app:title="Clock Text Shadow"
-            app:defaultValue="true" />
+            app:key="clear_preset"
+            app:title="Clear a Preset Slot" />
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Date Settings">
-        <SwitchPreferenceCompat
-            app:key="show_date"
-            app:title="Show Date"
-            app:summary="Display the date below the clock"
-            app:defaultValue="true" />
-        <Preference
-            app:key="date_font"
-            app:title="Date Font" />
-        <SeekBarPreference
-            app:key="date_size"
-            app:title="Date Text Size"
-            app:defaultValue="18"
-            android:min="12"
-            android:max="40"
-            app:showSeekBarValue="true" />
-        <Preference
-            app:key="date_color"
-            app:title="Date Text Color"
-            app:summary="Change the color of the date display" />
-        <SwitchPreferenceCompat
-            app:key="date_shadow"
-            app:title="Date Text Shadow"
-            app:defaultValue="true"
-            app:dependency="show_date" />
-    </PreferenceCategory>
+    <PreferenceCategory app:title="Look &amp; Feel">
 
-    <PreferenceCategory app:title="Display">
+        <PreferenceScreen app:key="time_display_screen" app:title="Time Display" app:summary="Customize the clock, digits, separators, and AM/PM">
+            <PreferenceCategory app:title="Clock Format">
+                <ListPreference
+                    app:key="time_format"
+                    app:title="Time Format"
+                    app:summary="%s"
+                    app:entries="@array/time_format_names"
+                    app:entryValues="@array/time_format_values"
+                    app:defaultValue="24h" />
+            </PreferenceCategory>
+            <PreferenceCategory app:title="Clock (HH:MM:SS)">
+                <Preference app:key="clock_font" app:title="Font" />
+                <SeekBarPreference app:key="clock_size" app:title="Text Size" app:defaultValue="50" android:min="30" android:max="100" app:showSeekBarValue="true" />
+                <Preference app:key="clock_color" app:title="Text Color" />
+                <SwitchPreferenceCompat app:key="clock_shadow" app:title="Text Shadow" app:defaultValue="true" />
+            </PreferenceCategory>
+            <PreferenceCategory app:title="Separators (:)">
+                <SwitchPreferenceCompat app:key="show_separator" app:title="Show Separators" app:defaultValue="true" />
+                <Preference app:key="separator_color" app:title="Color" app:dependency="show_separator" />
+            </PreferenceCategory>
+            <PreferenceCategory app:title="AM/PM Indicator">
+                <SwitchPreferenceCompat app:key="show_ampm" app:title="Show AM/PM" app:summary="Only for 12-hour format" app:defaultValue="true"/>
+                <Preference app:key="ampm_font" app:title="Font" app:dependency="show_ampm" />
+                <SeekBarPreference app:key="ampm_size" app:title="Text Size" app:defaultValue="24" android:min="10" android:max="50" app:showSeekBarValue="true" app:dependency="show_ampm" />
+                <Preference app:key="ampm_color" app:title="Text Color" app:dependency="show_ampm" />
+                <SwitchPreferenceCompat app:key="ampm_shadow" app:title="Text Shadow" app:defaultValue="true" app:dependency="show_ampm" />
+            </PreferenceCategory>
+            <PreferenceCategory app:title="Digit Background">
+                <ListPreference app:key="digit_bg_style" app:title="Style" app:summary="%s" app:entries="@array/digit_bg_style_names" app:entryValues="@array/digit_bg_style_values" app:defaultValue="filled" />
+                <Preference app:key="digit_bg_color" app:title="Color" app:dependency="digit_bg_style" />
+                <SeekBarPreference app:key="digit_bg_alpha" app:title="Transparency" app:defaultValue="100" android:max="100" app:showSeekBarValue="true" app:dependency="digit_bg_style" />
+                <SwitchPreferenceCompat app:key="digit_padding" app:title="Individual Padding" app:summary="Adds a small space around each number" app:defaultValue="false" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+
+        <PreferenceScreen app:key="date_display_screen" app:title="Date Display" app:summary="Customize the date text">
+            <SwitchPreferenceCompat app:key="show_date" app:title="Show Date" app:defaultValue="true" />
+            <Preference app:key="date_font" app:title="Font" app:dependency="show_date" />
+            <SeekBarPreference app:key="date_size" app:title="Text Size" app:defaultValue="18" android:min="12" android:max="40" app:showSeekBarValue="true" app:dependency="show_date" />
+            <Preference app:key="date_color" app:title="Text Color" app:dependency="show_date" />
+            <SwitchPreferenceCompat app:key="date_shadow" app:title="Text Shadow" app:defaultValue="true" app:dependency="show_date" />
+        </PreferenceScreen>
+
         <ListPreference
             app:key="background_select"
             app:title="Background Style"
@@ -87,21 +67,28 @@
             app:entries="@array/background_names"
             app:entryValues="@array/background_values"
             app:defaultValue="black" />
-        <SeekBarPreference
-            app:key="hide_button_delay"
-            app:title="Auto-hide Settings Button"
-            app:summary="Delay in seconds before the button disappears"
-            app:defaultValue="15"
-            android:min="3"
-            android:max="20"
-            app:showSeekBarValue="true" />
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Advanced">
-        <Preference
-            app:key="reset_settings"
-            app:title="Reset to Default"
-            app:summary="Restore all visual settings to their original state" />
+    <PreferenceCategory app:title="Behavior &amp; Features">
+        <PreferenceScreen app:key="automation_screen" app:title="Automation &amp; Fun" app:summary="Randomize styles and auto-change colors">
+            <PreferenceCategory app:title="Discovery">
+                <Preference app:key="randomize_settings" app:title="Randomize Style" app:summary="Feeling lucky? Get a new look instantly!" />
+            </PreferenceCategory>
+            <PreferenceCategory app:title="Automation">
+                <SwitchPreferenceCompat app:key="auto_color_change_toggle" app:title="Auto-change Text Colors" app:summary="Automatically cycle through colors for the text" app:defaultValue="false"/>
+                <SeekBarPreference app:key="auto_color_change_interval" app:title="Color Change Frequency" app:summary="Set the delay in seconds" app:defaultValue="10" android:min="1" android:max="60" app:showSeekBarValue="true" app:dependency="auto_color_change_toggle"/>
+            </PreferenceCategory>
+        </PreferenceScreen>
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="System">
+        <SeekBarPreference app:key="hide_button_delay" app:title="Auto-hide Settings Button" app:summary="Delay in seconds before the button disappears" app:defaultValue="6" android:min="3" android:max="20" app:showSeekBarValue="true" />
+        <Preference app:key="take_screenshot" app:title="Take Screenshot of Clock" app:summary="Saves an image of the main screen to your gallery"/>
+        <Preference app:key="reset_settings" app:title="Reset All Settings to Default" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="About">
+        <Preference app:key="about_screen" app:title="About Ora" />
     </PreferenceCategory>
 
 </PreferenceScreen>

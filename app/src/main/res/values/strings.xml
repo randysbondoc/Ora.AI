@@ -37,4 +37,159 @@
         <item>custom</item>
     </string-array>
 
+    <string-array name="digit_bg_style_names">
+        <item>Filled (Default)</item>
+        <item>Outline</item>
+        <item>None (Transparent)</item>
+    </string-array>
+    <string-array name="digit_bg_style_values">
+        <item>filled</item>
+        <item>outline</item>
+        <item>none</item>
+    </string-array>
+
+    <string name="about_app_text">
+        <![CDATA[
+        <h2><font color=\'#03A9F4\'>A Clock Built For You</font></h2>
+        Ora is a modern, full-screen clock designed for elegance, functionality, and deep personalization. Turn any device into a stunning desk clock, a nightstand companion, or a focused work timer.
+        <br/><br/>
+        You have complete control to create a look that is uniquely yours. Full customization is at your fingertips, including the ability to <b>select your own wallpaper</b> from your device\'s gallery.
+        <br/><br/>
+        Ora is on a path of <b>continuous development</b>. Future updates will bring exciting new functions and features, including planned integration with <b>Google Gemini and Google Assistant</b>.
+        ]]>
+    </string>
+
+    <string name="about_battery_analysis_text">
+        <![CDATA[
+        <h2><font color=\'#03A9F4\'>Engineered for Efficiency</font></h2>
+        We understand that an always-on display requires smart power management. Ora includes several key features to provide the best possible experience while being mindful of your battery.
+        <br/><br/>
+        <h3><font color=\'#4CAF50\'>Key Power-Saving Features</font></h3>
+        &#8226; <b>Smart Auto-Dimming:</b> After 3 minutes of inactivity, the screen automatically dims to significantly reduce power consumption while keeping the time visible.
+        <br/><br/>
+        &#8226; <b>OLED Optimized:</b> The default <b>Amoled Black</b> theme is perfect for OLED screens. It turns off black pixels completely, offering maximum power savings and a stunning, high-contrast look.
+        <br/><br/>
+        <h3><font color=\'#FF9800\'>Tips for Best Performance</font></h3>
+        For the longest battery life, we recommend using the <b>Amoled Black</b> background and keeping your device\'s screen brightness at a comfortable, low level. The power-saving features work hard, but less screen light always means more battery.
+        ]]>
+    </string>
+
+    <string name="settings_guide_text">
+        <![CDATA[
+        <h2><font color=\'#03A9F4\'>Settings Guide</font></h2>
+        A complete overview of every setting in Ora.
+        <br/><br/>
+        <h3><font color=\'#BA68C8\'>Preset Management</font></h3>
+        &#8226; <b>Apply a Preset:</b> Choose from a dropdown to instantly apply one of your 5 saved styles.
+        <br/>
+        &#8226; <b>Save Current Style:</b> Saves your current look into one of the 5 preset slots.
+        <br/>
+        &#8226; <b>Clear a Preset Slot:</b> Permanently deletes a saved style from a preset slot.
+        <br/><br/>
+        <h3><font color=\'#BA68C8\'>Look & Feel</font></h3>
+        <h4><i><font color=\'#03A9F4\'>Time Display</font></i></h4>
+        &#8226; <b>Time Format:</b> Switch between 12-hour and 24-hour display.
+        <br/>
+        &#8226; <b>Clock Font/Size/Color/Shadow:</b> Full customization for the main time digits.
+        <br/>
+        &#8226; <b>Separators:</b> Show or hide the \':\' and change its color.
+        <br/>
+        &#8226; <b>AM/PM Indicator:</b> Toggle visibility and customize the font, size, color, and shadow.
+        <br/>
+        &#8226; <b>Digit Background:</b> Change the style of the box behind each number to Filled, Outline, or None. Control its color, transparency, and padding.
+        <br/><br/>
+        <h4><i><font color=\'#03A9F4\'>Date Display</font></i></h4>
+        &#8226; Customize the font, size, color, and shadow for the date text, or hide it completely.
+        <br/><br/>
+        <h4><i><font color=\'#03A9F4\'>Background Style</font></i></h4>
+        &#8226; Choose from predefined styles or select any image from your device for the main screen background.
+        <br/><br/>
+        <h3><font color=\'#BA68C8\'>Behavior & Features</font></h3>
+        &#8226; <b>Automation & Fun:</b> Discover new styles with the <b>Randomize</b> button or enable <b>Auto-change Text Colors</b> to have them cycle automatically.
+        <br/><br/>
+        <h3><font color=\'#BA68C8\'>System</font></h3>
+        &#8226; <b>Auto-hide Settings Button:</b> Control how long the settings button stays visible (3-20 seconds).
+        <br/><br/>
+        &#8226; <b>Take Screenshot of Clock:</b> Saves a high-quality image of your current clock screen to your device\'s photo gallery.
+        <br/><br/>
+        &#8226; <b>Reset All Settings:</b> Restore every setting to its original, default state.
+        ]]>
+    </string>
+
+    <string name="buy_me_a_coffee_intro_text">
+        <![CDATA[
+        <h2><font color=\'#03A9F4\'>A Note From the Developer</font></h2>
+        Thank you for using Ora! I\'ve spent many days and weeks designing, coding, and testing this app. It\'s a passion project, born from countless errors and revisions to create a bug-free and beautiful experience for you.
+        <br/><br/>
+        My plan is to continue working on Ora, adding new features and improvements. You can always check the latest developments on my GitHub page. To keep the late-night coding sessions going, I run on coffee. If you enjoy the app, treating me to a coffee is a wonderful way to show your support and is greatly appreciated!
+        ]]>
+    </string>
+    <string name="thank_you_message">Thank you for your generosity and support!</string>
+
+    <string-array name="support_quotes">
+        <item>"The smallest act of kindness is worth more than the grandest intention."</item>
+        <item>"We make a living by what we get, but we make a life by what we give."</item>
+        <item>"No one has ever become poor by giving."</item>
+        <item>"Giving is not just about making a donation. It is about making a difference."</item>
+        <item>"The best way to find yourself is to lose yourself in the service of others."</item>
+        <item>"To ease another’s heartache is to forget one’s own."</item>
+        <item>"Generosity is giving more than you can, and pride is taking less than you need."</item>
+        <item>"The meaning of life is to find your gift. The purpose of life is to give it away."</item>
+        <item>"You have not lived today until you have done something for someone who can never repay you."</item>
+        <item>"It\'s not how much we give but how much love we put into giving."</item>
+        <item>"Act as if what you do makes a difference. It does."</item>
+        <item>"The wise man does not lay up his own treasures. The more he gives to others, the more he has for his own."</item>
+        <item>"Kindness in words creates confidence. Kindness in thinking creates profoundness. Kindness in giving creates love."</item>
+        <item>"There is no exercise better for the heart than reaching down and lifting people up."</item>
+        <item>"A kind gesture can reach a wound that only compassion can heal."</item>
+        <item>"Since you get more joy out of giving joy to others, you should put a good deal of thought into the happiness that you are able to give."</item>
+        <item>"Remember that the happiest people are not those getting more, but those giving more."</item>
+        <item>"For it is in giving that we receive."</item>
+        <item>"What we have done for ourselves alone dies with us; what we have done for others and the world remains and is immortal."</item>
+        <item>"If you want to touch the past, touch a rock. If you want to touch the present, touch a flower. If you want to touch the future, touch a life."</item>
+        <item>"The value of a man resides in what he gives and not in what he is capable of receiving."</item>
+        <item>"I have found that among its other benefits, giving liberates the soul of the giver."</item>
+        <item>"Attention is the rarest and purest form of generosity."</item>
+        <item>"Help others achieve their dreams and you will achieve yours."</item>
+        <item>"A man\'s true wealth is the good he does in this world."</item>
+        <item>"Love only grows by sharing. You can only have more for yourself by giving it away to others."</item>
+        <item>"Service to others is the rent you pay for your room here on earth."</item>
+        <item>"The degree of loving is measured by the degree of giving."</item>
+        <item>"When we give cheerfully and accept gratefully, everyone is blessed."</item>
+        <item>"He who serves the most, reaps the most."</item>
+    </string-array>
+
+    <string-array name="support_quote_authors">
+        <item>- Oscar Wilde</item>
+        <item>- Winston Churchill</item>
+        <item>- Anne Frank</item>
+        <item>- Kathy Calvin</item>
+        <item>- Mahatma Gandhi</item>
+        <item>- Abraham Lincoln</item>
+        <item>- Kahlil Gibran</item>
+        <item>- Pablo Picasso</item>
+        <item>- John Bunyan</item>
+        <item>- Mother Teresa</item>
+        <item>- William James</item>
+        <item>- Lao Tzu</item>
+        <item>- Lao Tzu</item>
+        <item>- John Holmes</item>
+        <item>- Steve Maraboli</item>
+        <item>- Eleanor Roosevelt</item>
+        <item>- H. Jackson Brown Jr.</item>
+        <item>- Francis of Assisi</item>
+        <item>- Albert Pike</item>
+        <item>- Unknown</item>
+        <item>- Albert Einstein</item>
+        <item>- Maya Angelou</item>
+        <item>- Simone Weil</item>
+        <item>- Les Brown</item>
+        <item>- Prophet Muhammad</item>
+        <item>- Brian Tracy</item>
+        <item>- Muhammad Ali</item>
+        <item>- Edwin Louis Cole</item>
+        <item>- Maya Angelou</item>
+        <item>- Jim Rohn</item>
+    </string-array>
+
 </resources>

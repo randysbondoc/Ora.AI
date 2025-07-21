@@ -1,9 +1,14 @@
 package tech.rb.ora
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,16 +27,13 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreferenceCompat
 import java.io.File
 import java.io.FileOutputStream
-import android.graphics.Typeface
-import android.graphics.drawable.GradientDrawable
-import android.Manifest
-import android.content.pm.PackageManager
-import android.os.Build
+import kotlin.random.Random
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartScreenCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,12 +47,26 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
+    override fun onPreferenceStartScreen(caller: PreferenceFragmentCompat, ps: PreferenceScreen): Boolean {
+        val fragment = SettingsFragment().apply {
+            arguments = Bundle().apply {
+                putString(PreferenceFragmentCompat.ARG_PREFERENCE_ROOT, ps.key)
+            }
+        }
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.settings, fragment)
+            .addToBackStack(null)
+            .commit()
+        return true
+    }
+
     class SettingsFragment : PreferenceFragmentCompat() {
 
         private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
                 val sharedPrefs = preferenceManager.sharedPreferences ?: return@registerForActivityResult
-                val newFilePath = copyImageToInternalStorage(uri)
+                val newFilePath = copyImageToInternalStorage(uri, "custom_background.jpg")
                 if (newFilePath != null) {
                     sharedPrefs.edit()
                         .putString("custom_background_path", newFilePath)
@@ -89,17 +105,29 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        private fun copyImageToInternalStorage(uri: Uri): String? {
+        private fun copyImageToInternalStorage(uri: Uri, targetFileName: String): String? {
             return try {
                 val inputStream = requireActivity().contentResolver.openInputStream(uri)
-                val file = File(requireContext().filesDir, "custom_background.jpg")
+                val file = File(requireContext().filesDir, targetFileName)
                 val outputStream = FileOutputStream(file)
                 inputStream?.copyTo(outputStream)
                 inputStream?.close()
                 outputStream.close()
                 file.absolutePath
             } catch (e: Exception) {
-                Log.e("SettingsFragment", "Failed to copy image", e)
+                Log.e("SettingsFragment", "Failed to copy image from URI", e)
+                null
+            }
+        }
+
+        private fun copyInternalFile(sourcePath: String, targetFileName: String): String? {
+            return try {
+                val sourceFile = File(sourcePath)
+                val targetFile = File(requireContext().filesDir, targetFileName)
+                sourceFile.copyTo(targetFile, overwrite = true)
+                targetFile.absolutePath
+            } catch (e: Exception) {
+                Log.e("SettingsFragment", "Failed to copy internal file", e)
                 null
             }
         }
@@ -112,7 +140,10 @@ class SettingsActivity : AppCompatActivity() {
                     activity?.finish()
                 }
                 "show_ampm", "show_date", "clock_size", "date_size", "clock_color", "date_color", "ampm_size", "ampm_color",
-                "clock_shadow", "date_shadow", "ampm_shadow", "hide_button_delay" -> {
+                "clock_shadow", "date_shadow", "ampm_shadow", "hide_button_delay",
+                "show_separator", "separator_color", "digit_padding",
+                "digit_bg_style", "digit_bg_color", "digit_bg_alpha",
+                "auto_color_change_toggle", "auto_color_change_interval" -> {
                     activity?.finish()
                 }
             }
@@ -121,21 +152,27 @@ class SettingsActivity : AppCompatActivity() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
-            val backgroundPref = findPreference<ListPreference>("background_select")
-            val clockFontPref = findPreference<Preference>("clock_font")
-            val dateFontPref = findPreference<Preference>("date_font")
-            val ampmFontPref = findPreference<Preference>("ampm_font")
-            val clockColorPref = findPreference<Preference>("clock_color")
-            val dateColorPref = findPreference<Preference>("date_color")
-            val ampmColorPref = findPreference<Preference>("ampm_color")
-            val resetPref = findPreference<Preference>("reset_settings")
+            val applyPresetPref = findPreference<ListPreference>("apply_preset")
+            setupPresetDropdown(applyPresetPref)
+            applyPresetPref?.setOnPreferenceChangeListener { _, newValue ->
+                applyPreset(newValue.toString().toInt())
+                false
+            }
 
-            updateFontSummary("clock_font")
-            updateFontSummary("date_font")
-            updateFontSummary("ampm_font")
-            updateAmPmSwitchState(preferenceManager.sharedPreferences)
+            findPreference<Preference>("save_preset")?.setOnPreferenceClickListener { showSavePresetDialog(); true }
+            findPreference<Preference>("clear_preset")?.setOnPreferenceClickListener { showClearPresetDialog(); true }
+            findPreference<Preference>("reset_settings")?.setOnPreferenceClickListener { showResetConfirmationDialog(); true }
+            findPreference<Preference>("about_screen")?.setOnPreferenceClickListener {
+                startActivity(Intent(requireContext(), AboutActivity::class.java))
+                true
+            }
+            findPreference<Preference>("take_screenshot")?.setOnPreferenceClickListener {
+                preferenceManager.sharedPreferences?.edit()?.putBoolean("take_screenshot_flag", true)?.apply()
+                activity?.finish()
+                true
+            }
 
-            backgroundPref?.setOnPreferenceChangeListener { _, newValue ->
+            findPreference<ListPreference>("background_select")?.setOnPreferenceChangeListener { _, newValue ->
                 if (newValue == "custom") {
                     launchPickerWithPermissionCheck()
                     false
@@ -145,13 +182,189 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
 
-            clockFontPref?.setOnPreferenceClickListener { showFontSelectionDialog(title = "Select Clock Font", preferenceKey = "clock_font"); true }
-            dateFontPref?.setOnPreferenceClickListener { showFontSelectionDialog(title = "Select Date Font", preferenceKey = "date_font"); true }
-            ampmFontPref?.setOnPreferenceClickListener { showFontSelectionDialog(title = "Select AM/PM Font", preferenceKey = "ampm_font"); true }
-            clockColorPref?.setOnPreferenceClickListener { showColorSelectionDialog(title = "Select Clock Color", preferenceKey = "clock_color"); true }
-            dateColorPref?.setOnPreferenceClickListener { showColorSelectionDialog(title = "Select Date Color", preferenceKey = "date_color"); true }
-            ampmColorPref?.setOnPreferenceClickListener { showColorSelectionDialog(title = "Select AM/PM Color", preferenceKey = "ampm_color"); true }
-            resetPref?.setOnPreferenceClickListener { showResetConfirmationDialog(); true }
+            findPreference<Preference>("randomize_settings")?.setOnPreferenceClickListener { randomizeSettings(); true }
+
+            findPreference<Preference>("clock_color")?.setOnPreferenceClickListener { showColorSelectionDialog(title = "Select Clock Color", preferenceKey = "clock_color"); true }
+            findPreference<Preference>("date_color")?.setOnPreferenceClickListener { showColorSelectionDialog(title = "Select Date Color", preferenceKey = "date_color"); true }
+            findPreference<Preference>("ampm_color")?.setOnPreferenceClickListener { showColorSelectionDialog(title = "Select AM/PM Color", preferenceKey = "ampm_color"); true }
+            findPreference<Preference>("separator_color")?.setOnPreferenceClickListener { showColorSelectionDialog(title = "Select Separator Color", preferenceKey = "separator_color"); true }
+            findPreference<Preference>("digit_bg_color")?.setOnPreferenceClickListener { showColorSelectionDialog(title = "Select Digit BG Color", preferenceKey = "digit_bg_color"); true }
+
+            findPreference<Preference>("clock_font")?.setOnPreferenceClickListener { showFontSelectionDialog(title = "Select Clock Font", preferenceKey = "clock_font"); true }
+            findPreference<Preference>("date_font")?.setOnPreferenceClickListener { showFontSelectionDialog(title = "Select Date Font", preferenceKey = "date_font"); true }
+            findPreference<Preference>("ampm_font")?.setOnPreferenceClickListener { showFontSelectionDialog(title = "Select AM/PM Font", preferenceKey = "ampm_font"); true }
+
+            updateFontSummary("clock_font")
+            updateFontSummary("date_font")
+            updateFontSummary("ampm_font")
+            updateAmPmSwitchState(preferenceManager.sharedPreferences)
+        }
+
+        private fun setupPresetDropdown(listPreference: ListPreference?) {
+            val entries = mutableListOf<CharSequence>()
+            val entryValues = mutableListOf<CharSequence>()
+            for (i in 1..5) {
+                val prefs = requireContext().getSharedPreferences("preset_$i", Context.MODE_PRIVATE)
+                val status = if (prefs.all.isEmpty()) "(Empty)" else "(Saved)"
+                entries.add("Preset $i $status")
+                entryValues.add(i.toString())
+            }
+            listPreference?.entries = entries.toTypedArray()
+            listPreference?.entryValues = entryValues.toTypedArray()
+        }
+
+        private fun showSavePresetDialog() {
+            val presetSlots = arrayOf("Preset 1", "Preset 2", "Preset 3", "Preset 4", "Preset 5")
+            AlertDialog.Builder(requireContext())
+                .setTitle("Save Current Style To...")
+                .setItems(presetSlots) { _, which ->
+                    val slotNumber = which + 1
+                    val presetPrefs = requireContext().getSharedPreferences("preset_$slotNumber", Context.MODE_PRIVATE)
+                    if (presetPrefs.all.isNotEmpty()) {
+                        showOverwriteDialog(slotNumber)
+                    } else {
+                        savePreset(slotNumber)
+                    }
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
+
+        private fun showOverwriteDialog(slotNumber: Int) {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Overwrite Preset?")
+                .setMessage("Preset $slotNumber already has a saved style. Do you want to overwrite it?")
+                .setPositiveButton("Overwrite") { _, _ ->
+                    savePreset(slotNumber)
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
+
+        private fun showClearPresetDialog() {
+            val presetSlots = arrayOf("Preset 1", "Preset 2", "Preset 3", "Preset 4", "Preset 5")
+            AlertDialog.Builder(requireContext())
+                .setTitle("Clear Which Preset?")
+                .setItems(presetSlots) { _, which ->
+                    val slotNumber = which + 1
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("Confirm Clear")
+                        .setMessage("Are you sure you want to permanently delete Preset $slotNumber?")
+                        .setPositiveButton("Clear") { _, _ ->
+                            clearPreset(slotNumber)
+                        }
+                        .setNegativeButton("Cancel", null)
+                        .show()
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
+        }
+
+        private fun clearPreset(slotNumber: Int) {
+            val presetPrefs = requireContext().getSharedPreferences("preset_$slotNumber", Context.MODE_PRIVATE)
+            presetPrefs.edit().clear().apply()
+
+            val backgroundFile = File(requireContext().filesDir, "preset_${slotNumber}_background.jpg")
+            if (backgroundFile.exists()) {
+                backgroundFile.delete()
+            }
+
+            Toast.makeText(requireContext(), "Preset $slotNumber cleared", Toast.LENGTH_SHORT).show()
+            setupPresetDropdown(findPreference("apply_preset"))
+        }
+
+        private fun savePreset(slotNumber: Int) {
+            val mainPrefs = preferenceManager.sharedPreferences ?: return
+            val presetPrefs = requireContext().getSharedPreferences("preset_$slotNumber", Context.MODE_PRIVATE)
+            val presetEditor = presetPrefs.edit()
+
+            presetEditor.clear()
+
+            var customImagePath: String? = null
+            if (mainPrefs.getString("background_select", "") == "custom") {
+                val currentPath = mainPrefs.getString("custom_background_path", null)
+                if (currentPath != null && File(currentPath).exists()) {
+                    val newFileName = "preset_${slotNumber}_background.jpg"
+                    customImagePath = copyInternalFile(currentPath, newFileName)
+                }
+            }
+
+            mainPrefs.all.forEach { (key, value) ->
+                if (key == "custom_background_path" && customImagePath != null) {
+                    presetEditor.putString(key, customImagePath)
+                } else {
+                    when (value) {
+                        is String -> presetEditor.putString(key, value)
+                        is Int -> presetEditor.putInt(key, value)
+                        is Boolean -> presetEditor.putBoolean(key, value)
+                        is Float -> presetEditor.putFloat(key, value)
+                        is Long -> presetEditor.putLong(key, value)
+                    }
+                }
+            }
+            presetEditor.apply()
+            Toast.makeText(requireContext(), "Style saved to Preset $slotNumber", Toast.LENGTH_SHORT).show()
+            setupPresetDropdown(findPreference("apply_preset"))
+        }
+
+        private fun applyPreset(slotNumber: Int) {
+            val mainPrefs = preferenceManager.sharedPreferences ?: return
+            val presetPrefs = requireContext().getSharedPreferences("preset_$slotNumber", Context.MODE_PRIVATE)
+
+            if (presetPrefs.all.isEmpty()) {
+                Toast.makeText(requireContext(), "Preset $slotNumber is empty", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            val mainEditor = mainPrefs.edit()
+
+            presetPrefs.all.forEach { (key, value) ->
+                when (value) {
+                    is String -> mainEditor.putString(key, value)
+                    is Int -> mainEditor.putInt(key, value)
+                    is Boolean -> mainEditor.putBoolean(key, value)
+                    is Float -> mainEditor.putFloat(key, value)
+                    is Long -> mainEditor.putLong(key, value)
+                }
+            }
+            mainEditor.apply()
+            activity?.finish()
+        }
+
+        private fun randomizeSettings() {
+            val sharedPrefs = preferenceManager.sharedPreferences ?: return
+            val editor = sharedPrefs.edit()
+
+            val fontFiles = resources.getStringArray(R.array.font_file_values)
+            val colors = resources.getIntArray(R.array.color_picker_palette)
+            val backgroundValues = resources.getStringArray(R.array.background_values).filter { it != "custom" }
+
+            val randomFont = fontFiles.random()
+            editor.putString("clock_font", randomFont)
+            editor.putString("date_font", fontFiles.random())
+            editor.putString("ampm_font", randomFont)
+
+            val currentBackground = sharedPrefs.getString("background_select", "black")
+            val colorBlack = ContextCompat.getColor(requireContext(), R.color.black)
+            val availableColors = if (currentBackground == "black") {
+                colors.filter { it != colorBlack }
+            } else {
+                colors.toList()
+            }
+            val randomColor = availableColors.random()
+            editor.putInt("clock_color", randomColor)
+            editor.putInt("date_color", availableColors.random())
+            editor.putInt("ampm_color", randomColor)
+            editor.putInt("separator_color", randomColor)
+
+            editor.putInt("clock_size", Random.nextInt(40, 91))
+            editor.putInt("date_size", Random.nextInt(14, 31))
+            editor.putInt("ampm_size", Random.nextInt(16, 41))
+
+            editor.putString("background_select", backgroundValues.random())
+
+            editor.apply()
+            activity?.finish()
         }
 
         private fun showResetConfirmationDialog() {
@@ -163,10 +376,7 @@ class SettingsActivity : AppCompatActivity() {
                     sharedPrefs.edit().clear().apply()
                     preferenceScreen.removeAll()
                     addPreferencesFromResource(R.xml.root_preferences)
-                    updateFontSummary("clock_font")
-                    updateFontSummary("date_font")
-                    updateFontSummary("ampm_font")
-                    updateAmPmSwitchState(sharedPrefs)
+                    onCreatePreferences(null, null)
                 }
                 .setNegativeButton("Cancel", null)
                 .show()
@@ -181,7 +391,7 @@ class SettingsActivity : AppCompatActivity() {
             val context = requireContext()
             val sharedPrefs = preferenceManager.sharedPreferences ?: return
             val colorGridView = LayoutInflater.from(context).inflate(R.layout.dialog_color_picker, null) as GridView
-            val colors = listOf(ContextCompat.getColor(context, R.color.white), ContextCompat.getColor(context, R.color.text_grey), ContextCompat.getColor(context, R.color.md_grey_300), ContextCompat.getColor(context, R.color.md_grey_500), ContextCompat.getColor(context, R.color.md_grey_700), ContextCompat.getColor(context, R.color.md_red_300), ContextCompat.getColor(context, R.color.md_red_500), ContextCompat.getColor(context, R.color.md_red_700), ContextCompat.getColor(context, R.color.md_pink_300), ContextCompat.getColor(context, R.color.md_pink_500), ContextCompat.getColor(context, R.color.md_pink_700), ContextCompat.getColor(context, R.color.md_purple_300), ContextCompat.getColor(context, R.color.md_purple_500), ContextCompat.getColor(context, R.color.md_purple_700), ContextCompat.getColor(context, R.color.md_deep_purple_500), ContextCompat.getColor(context, R.color.md_indigo_500), ContextCompat.getColor(context, R.color.md_blue_300), ContextCompat.getColor(context, R.color.md_blue_500), ContextCompat.getColor(context, R.color.md_blue_700), ContextCompat.getColor(context, R.color.md_light_blue_500), ContextCompat.getColor(context, R.color.md_cyan_500), ContextCompat.getColor(context, R.color.md_teal_500), ContextCompat.getColor(context, R.color.md_green_300), ContextCompat.getColor(context, R.color.md_green_500), ContextCompat.getColor(context, R.color.md_green_700), ContextCompat.getColor(context, R.color.md_light_green_500), ContextCompat.getColor(context, R.color.md_lime_500), ContextCompat.getColor(context, R.color.md_yellow_500), ContextCompat.getColor(context, R.color.md_amber_500), ContextCompat.getColor(context, R.color.md_orange_500), ContextCompat.getColor(context, R.color.md_deep_orange_500), ContextCompat.getColor(context, R.color.neon_pink), ContextCompat.getColor(context, R.color.neon_green), ContextCompat.getColor(context, R.color.neon_blue), ContextCompat.getColor(context, R.color.black))
+            val colors = resources.getIntArray(R.array.color_picker_palette).toList()
             val adapter = ColorAdapter(context, colors)
             colorGridView.adapter = adapter
             val dialog = AlertDialog.Builder(context).setTitle(title).setView(colorGridView).setNegativeButton("Cancel", null).create()

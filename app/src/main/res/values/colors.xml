@@ -43,4 +43,47 @@
     <color name="neon_pink">#FF00FF</color>
     <color name="neon_green">#39FF14</color>
     <color name="neon_blue">#00FFFF</color>
+
+    <array name="color_picker_palette">
+        <item>@color/white</item>
+        <item>@color/text_grey</item>
+        <item>@color/md_grey_300</item>
+        <item>@color/md_grey_500</item>
+        <item>@color/md_grey_700</item>
+        <item>@color/md_red_300</item>
+        <item>@color/md_red_500</item>
+        <item>@color/md_red_700</item>
+        <item>@color/md_pink_300</item>
+        <item>@color/md_pink_500</item>
+        <item>@color/md_pink_700</item>
+        <item>@color/md_purple_300</item>
+        <item>@color/md_purple_500</item>
+        <item>@color/md_purple_700</item>
+        <item>@color/md_deep_purple_500</item>
+        <item>@color/md_indigo_500</item>
+        <item>@color/md_blue_300</item>
+        <item>@color/md_blue_500</item>
+        <item>@color/md_blue_700</item>
+        <item>@color/md_light_blue_500</item>
+        <item>@color/md_cyan_500</item>
+        <item>@color/md_teal_500</item>
+        <item>@color/md_green_300</item>
+        <item>@color/md_green_500</item>
+        <item>@color/md_green_700</item>
+        <item>@color/md_light_green_500</item>
+        <item>@color/md_lime_500</item>
+        <item>@color/md_yellow_500</item>
+        <item>@color/md_amber_500</item>
+        <item>@color/md_orange_500</item>
+        <item>@color/md_deep_orange_500</item>
+        <item>@color/neon_pink</item>
+        <item>@color/neon_green</item>
+        <item>@color/neon_blue</item>
+        <item>@color/black</item>
+    </array>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_900">#FF01579B</color>
+    <color name="light_blue_A200">#FF40C4FF</color>
+    <color name="light_blue_A400">#FF00B0FF</color>
+    <color name="black_overlay">#66000000</color>
 </resources>

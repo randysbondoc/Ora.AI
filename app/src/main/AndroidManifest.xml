@@ -3,8 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
 
     <application
         android:allowBackup="true"
@@ -17,10 +21,34 @@
         android:theme="@style/Theme.Ora"
         tools:targetApi="31">
         <activity
+            android:name=".FullScreenImageActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".SettingsGuideActivity"
+            android:exported="false"
+            android:label="Settings Guide"
+            android:parentActivityName=".AboutActivity"/>
+        <activity
+            android:name=".BatteryInfoActivity"
+            android:exported="false"
+            android:label="Battery &amp; Power Analysis"
+            android:parentActivityName=".AboutActivity"/>
+        <activity
+            android:name=".CoffeeActivity"
+            android:exported="false"
+            android:label="Support Development"
+            android:parentActivityName=".AboutActivity"/>
+        <activity
+            android:name=".AboutActivity"
+            android:exported="false"
+            android:label="About Ora"
+            android:parentActivityName=".SettingsActivity" />
+        <activity
             android:name=".SettingsActivity"
             android:exported="false"
             android:label="Settings"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
