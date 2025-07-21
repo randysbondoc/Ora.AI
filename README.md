@@ -1,30 +1,48 @@
 # Ora - Retro Flip Clock ⏰
 
-A minimalist, full-screen flip clock application for Android, designed with a retro aesthetic and an AMOLED-friendly interface. This project focuses on deep customization and a polished user experience.
+Ora is a modern, full-screen clock designed for elegance, functionality, and deep personalization. Turn any device into a stunning desk clock, a nightstand companion, or a focused work timer. You have complete control to create a look that is uniquely yours. Full customization is at your fingertips, including the ability to select your own wallpaper from your device's gallery. Ora is on a path of continuous development. Future updates will bring exciting new functions and features, including planned integration with Google Gemini and Google Assistant.
 
-![Ora Screenshot](https://i.imgur.com/L8a1uRk.png)
-> **Note:** You should replace this with an updated screenshot of your app running with your favorite new theme!
+<p align="center">
+  <img src="./assets/ora_logo.png" alt="Ora Logo" width="150"/>
+</p>
+
+<p align="center">
+  <img src="./assets/ora_screenshot_v1_6.png" alt="Ora Screenshot" width="300"/>
+</p>
 
 ---
 
-## ✨ Features (v1.5)
+## ✨ Features (v1.6)
 
-* **Full-Screen & Immersive:** Hides system bars for a clean look and automatically re-hides them after 15 seconds of inactivity.
-* **Complete Customization via a Reorganized Settings Menu:**
-  * **Time Format:** Choose between 12-hour (AM/PM) and 24-hour formats.
-  * **Font Selection:** Choose from 10 different fonts for the clock, date, and AM/PM indicator.
-  * **Background Selection:** Select from pre-defined themes or any image from your device's photo gallery.
-  * **Text Size & Color:** Independently control the size and color for the clock, date, and AM/PM indicator.
-  * **Text Shadow:** Toggle shadows on or off for the clock, date, and AM/PM text for better contrast.
-  * **Display Toggles:** Show or hide the date and the AM/PM indicator.
-  * **Auto-Hide Settings Button:** The settings button now fades out after a user-defined delay (3-20 seconds).
-  * **Reset Option:** A button to restore all settings to their default state.
+* **Complete Preset System:** Save up to 5 complete style configurations and apply them instantly from a dropdown menu. Presets now show their status (Empty/Saved) and have confirmation dialogs for overwriting and clearing.
+* **Advanced Customization:**
+  * **Digit Backgrounds:** Style the background of each number as Filled, Outline, or None, with full control over color and transparency.
+  * **Horizontal Padding:** The clock now has elegant margins, and users can toggle extra padding around each digit.
+  * **Separator Control:** The ":" separators can be hidden or have their color customized.
+* **Automation & Discovery:**
+  * **Randomize Style:** A "Randomize" button instantly applies a new, random combination of styles.
+  * **Auto-Color Change:** An optional feature to automatically cycle through text colors at a user-defined interval.
+* **Enhanced "About" Screen:**
+  * A completely redesigned screen showing the app icon, version, creator, and links to the GitHub repository and version history.
+  * Separate, detailed screens for a "Settings Guide" and "Battery & Power Analysis".
+  * A "Buy me a coffee" screen with clickable QR codes.
+* **Screenshot to Gallery:** A new button in the settings captures a high-quality screenshot of your clock design and saves it to your device's Pictures folder.
+* **Major UI/UX Overhaul:** The settings menu has been completely reorganized into logical sub-menus for a much cleaner and more intuitive user experience.
 
 ---
 
 ## 📜 Version History
 
-### Version 1.5 (Latest)
+### Version 1.6 (Latest)
+* Added a full preset system with 5 save slots.
+* Completely reorganized the settings menu into logical sub-screens.
+* Added advanced options for digit backgrounds (Filled, Outline, None, Color, Transparency).
+* Added a "Randomize Style" button and an "Auto-change Text Colors" feature.
+* Added a screenshot-to-gallery feature.
+* Redesigned the "About" screen with more details and sub-pages.
+* Fixed numerous bugs, including issues with custom backgrounds in presets.
+
+### Version 1.5
 * Added an auto-hide feature for the settings button with a customizable delay.
 * Added toggle switches to enable or disable text shadows on all text elements.
 * The app now automatically returns to full-screen mode after 15 seconds of inactivity.
@@ -36,8 +54,8 @@ A minimalist, full-screen flip clock application for Android, designed with a re
 * Implemented runtime permissions for media access and secure local copying of the image.
 
 ### Version 1.3
-* Added 12/24 hour time format selection and AM/PM toggle.
-* Added separate size and color customization for the AM/PM text.
+* Added 12/24 hour time format selection and AM/PM toggle. 
+* Added separate size and color customization for the AM/PM text. 
 * Added a "Reset to Default" option.
 
 (Older versions omitted for brevity)
@@ -63,5 +81,5 @@ A minimalist, full-screen flip clock application for Android, designed with a re
 
 ## 🗺️ Roadmap
 
-* **[v1.6]** Integrate a simple weather and temperature display.
-* **[v1.6]** Add an option to change the ":" separator style or color.
+* **[v1.7]** Integrate a simple weather and temperature display.
+* **[v1.7]** Explore Google Gemini and Google Assistant integration.
