@@ -10,8 +10,6 @@ import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -26,19 +24,22 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreferenceCompat
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import kotlin.random.Random
 
 class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartScreenCallback {
 
-    private val idleHandler = Handler(Looper.getMainLooper())
-    private val idleRunnable = Runnable { finish() }
+    private var idleJob: Job? = null
     private val IDLE_DELAY_MS = 20000L // 20 seconds
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,8 +55,11 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
     }
 
     private fun resetIdleTimer() {
-        idleHandler.removeCallbacks(idleRunnable)
-        idleHandler.postDelayed(idleRunnable, IDLE_DELAY_MS)
+        idleJob?.cancel()
+        idleJob = lifecycleScope.launch {
+            delay(IDLE_DELAY_MS)
+            finish()
+        }
     }
 
     override fun onResume() {
@@ -65,7 +69,7 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
 
     override fun onPause() {
         super.onPause()
-        idleHandler.removeCallbacks(idleRunnable)
+        idleJob?.cancel()
     }
 
     override fun onUserInteraction() {
@@ -165,7 +169,6 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     updateAmPmSwitchState(sharedPrefs)
                     activity?.finish()
                 }
-                // Updated list of keys that will auto-close the settings page
                 "show_ampm", "show_date", "clock_size", "date_size", "clock_color", "date_color", "ampm_size", "ampm_color",
                 "clock_shadow", "date_shadow", "ampm_shadow", "hide_button_delay",
                 "show_separator", "separator_color", "digit_padding",

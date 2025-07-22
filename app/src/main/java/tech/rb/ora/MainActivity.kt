@@ -36,10 +36,15 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
 import coil.Coil
 import coil.request.ImageRequest
 import coil.target.Target
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import tech.rb.ora.databinding.ActivityMainBinding
 import java.io.File
 import java.io.IOException
@@ -58,24 +63,17 @@ class MainActivity : AppCompatActivity() {
     private val formatter12h = DateTimeFormatter.ofPattern("hhmmss")
     private val formatterAmPm = DateTimeFormatter.ofPattern("a", Locale.getDefault())
 
-    private val timeHandler = Handler(Looper.getMainLooper())
-    private val dimHandler = Handler(Looper.getMainLooper())
-    private val hideButtonHandler = Handler(Looper.getMainLooper())
-    private val hideSystemBarsHandler = Handler(Looper.getMainLooper())
-    private val autoColorHandler = Handler(Looper.getMainLooper())
-    private var autoColorRunnable: Runnable? = null
-
+    // Coroutine Jobs to replace Handlers
+    private var clockJob: Job? = null
+    private var dimJob: Job? = null
+    private var hideButtonJob: Job? = null
+    private var hideSystemBarsJob: Job? = null
+    private var autoColorJob: Job? = null
 
     private var hideButtonDelayMs = 6000L
-    private val hideButtonRunnable = Runnable {
-        binding.settingsButton.animate().alpha(0f).setDuration(500).withEndAction {
-            binding.settingsButton.visibility = View.GONE
-        }
-    }
     private val UPDATE_INTERVAL_MS = 200L
     private val IDLE_DELAY_MS = 3 * 60 * 1000L
     private val HIDE_SYSTEM_BARS_DELAY_MS = 6 * 1000L
-    private val hideSystemBarsRunnable = Runnable { setupFullScreen() }
 
     private val settingsListener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
         applyAllSettings()
@@ -98,7 +96,6 @@ class MainActivity : AppCompatActivity() {
         setupFullScreen()
         keepScreenOn()
         startClock()
-        startDimTimer()
         setupSettingsButton()
     }
 
@@ -115,17 +112,19 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(settingsListener)
-        hideButtonHandler.removeCallbacks(hideButtonRunnable)
-        hideSystemBarsHandler.removeCallbacks(hideSystemBarsRunnable)
+        // Cancel jobs to prevent them from running in the background
+        hideButtonJob?.cancel()
+        hideSystemBarsJob?.cancel()
+        dimJob?.cancel()
         stopAutoColorChange()
     }
 
 
     override fun onDestroy() {
         super.onDestroy()
-        timeHandler.removeCallbacksAndMessages(null)
-        dimHandler.removeCallbacksAndMessages(null)
-        autoColorHandler.removeCallbacksAndMessages(null)
+        // lifecycleScope is automatically cancelled, but it's good practice
+        // to nullify for clarity and potential memory management benefits.
+        clockJob = null
         backgroundTarget = null
     }
 
@@ -146,9 +145,11 @@ class MainActivity : AppCompatActivity() {
     private fun checkForScreenshotRequest() {
         if (sharedPreferences.getBoolean("take_screenshot_flag", false)) {
             sharedPreferences.edit().putBoolean("take_screenshot_flag", false).apply()
-            Handler(Looper.getMainLooper()).postDelayed({
+            // Using a coroutine for a simple delay
+            lifecycleScope.launch {
+                delay(300)
                 requestScreenshotPermissionsAndCapture()
-            }, 300)
+            }
         }
     }
 
@@ -175,7 +176,6 @@ class MainActivity : AppCompatActivity() {
         val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Use PixelCopy for Android Oreo (API 26) and newer
             val locationOfViewInWindow = IntArray(2)
             view.getLocationInWindow(locationOfViewInWindow)
             val rect = Rect(locationOfViewInWindow[0], locationOfViewInWindow[1],
@@ -189,9 +189,8 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this, "Screenshot failed with PixelCopy", Toast.LENGTH_SHORT).show()
                     }
                 }
-            }, Handler(Looper.getMainLooper()))
+            }, Handler(Looper.getMainLooper())) // PixelCopy requires a Handler, this is a valid exception
         } else {
-            // Fallback for older Android versions
             try {
                 val canvas = Canvas(bitmap)
                 view.draw(canvas)
@@ -218,7 +217,7 @@ class MainActivity : AppCompatActivity() {
                 contentResolver.openOutputStream(uri).use { outputStream ->
                     if (outputStream != null) {
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-                        runOnUiThread { // Ensure Toast is on the main thread
+                        runOnUiThread {
                             Toast.makeText(this, "Screenshot saved to Pictures/Ora", Toast.LENGTH_LONG).show()
                         }
                     } else {
@@ -230,24 +229,33 @@ class MainActivity : AppCompatActivity() {
             }
         } catch (t: Throwable) {
             Log.e("MainActivity", "Failed to save bitmap", t)
-            runOnUiThread { // Ensure Toast is on the main thread
+            runOnUiThread {
                 Toast.makeText(this, "Failed to save screenshot: ${t.message}", Toast.LENGTH_LONG).show()
             }
         } finally {
-            bitmap.recycle() // Free up memory after saving
+            bitmap.recycle()
         }
     }
 
     private fun showAndResetHideButtonTimer() {
         binding.settingsButton.visibility = View.VISIBLE
         binding.settingsButton.alpha = 1f
-        hideButtonHandler.removeCallbacks(hideButtonRunnable)
-        hideButtonHandler.postDelayed(hideButtonRunnable, hideButtonDelayMs)
+
+        hideButtonJob?.cancel()
+        hideButtonJob = lifecycleScope.launch {
+            delay(hideButtonDelayMs)
+            binding.settingsButton.animate().alpha(0f).setDuration(500).withEndAction {
+                binding.settingsButton.visibility = View.GONE
+            }.start()
+        }
     }
 
     private fun resetHideSystemBarsTimer() {
-        hideSystemBarsHandler.removeCallbacks(hideSystemBarsRunnable)
-        hideSystemBarsHandler.postDelayed(hideSystemBarsRunnable, HIDE_SYSTEM_BARS_DELAY_MS)
+        hideSystemBarsJob?.cancel()
+        hideSystemBarsJob = lifecycleScope.launch {
+            delay(HIDE_SYSTEM_BARS_DELAY_MS)
+            setupFullScreen()
+        }
     }
 
     private fun setupSettingsButton() {
@@ -258,12 +266,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startClock() {
-        val timeUpdater = object : Runnable {
-            override fun run() {
+        clockJob?.cancel()
+        clockJob = lifecycleScope.launch {
+            while (isActive) {
                 val now = LocalDateTime.now()
                 val is12Hour = sharedPreferences.getString("time_format", "24h") == "12h"
                 val timeFormatter = if (is12Hour) formatter12h else formatter24h
                 val timeString = now.format(timeFormatter)
+
                 updateDigit(binding.hour1, timeString[0].toString())
                 updateDigit(binding.hour2, timeString[1].toString())
                 updateDigit(binding.minute1, timeString[2].toString())
@@ -271,15 +281,15 @@ class MainActivity : AppCompatActivity() {
                 updateDigit(binding.second1, timeString[4].toString())
                 updateDigit(binding.second2, timeString[5].toString())
                 binding.dateTextView.text = now.format(dateFormatter)
+
                 val showAmPm = sharedPreferences.getBoolean("show_ampm", true)
                 binding.ampmTextView.visibility = if (is12Hour && showAmPm) View.VISIBLE else View.GONE
                 if (is12Hour && showAmPm) {
                     binding.ampmTextView.text = now.format(formatterAmPm)
                 }
-                timeHandler.postDelayed(this, UPDATE_INTERVAL_MS)
+                delay(UPDATE_INTERVAL_MS)
             }
         }
-        timeHandler.post(timeUpdater)
     }
 
     private fun applyAllSettings() {
@@ -335,25 +345,20 @@ class MainActivity : AppCompatActivity() {
             stopAutoColorChange()
         }
 
-        // Apply Clock Visibility
         binding.clockContainer.visibility = if (sharedPreferences.getBoolean("show_clock", true)) View.VISIBLE else View.GONE
 
-        // Apply Vertical and Horizontal Position Settings
         val clockVerticalPercent = sharedPreferences.getInt("clock_vertical_position", 50)
         val dateVerticalPercent = sharedPreferences.getInt("date_vertical_position", 60)
         val dateHorizontalPercent = sharedPreferences.getInt("date_horizontal_position", 50)
 
-        // Convert percentages (0-100) to bias (0.0-1.0)
         val clockVerticalBias = clockVerticalPercent / 100f
         val dateVerticalBias = dateVerticalPercent / 100f
         val dateHorizontalBias = dateHorizontalPercent / 100f
 
-        // Apply bias to the clock container
         val clockParams = binding.clockContainer.layoutParams as ConstraintLayout.LayoutParams
         clockParams.verticalBias = clockVerticalBias
         binding.clockContainer.layoutParams = clockParams
 
-        // Apply bias to the date text view
         val dateParams = binding.dateTextView.layoutParams as ConstraintLayout.LayoutParams
         dateParams.verticalBias = dateVerticalBias
         dateParams.horizontalBias = dateHorizontalBias
@@ -361,14 +366,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startAutoColorChange() {
-        if (autoColorRunnable != null) return
+        if (autoColorJob?.isActive == true) return // Don't start a new one if it's already running
 
         val intervalSeconds = sharedPreferences.getInt("auto_color_change_interval", 10)
         val intervalMillis = intervalSeconds * 1000L
         val colors = resources.getIntArray(R.array.color_picker_palette)
 
-        autoColorRunnable = object : Runnable {
-            override fun run() {
+        autoColorJob = lifecycleScope.launch {
+            while (isActive) {
+                delay(intervalMillis)
                 val editor = sharedPreferences.edit()
                 val randomColor = colors.random()
                 editor.putInt("clock_color", randomColor)
@@ -376,18 +382,13 @@ class MainActivity : AppCompatActivity() {
                 editor.putInt("ampm_color", randomColor)
                 editor.putInt("separator_color", randomColor)
                 editor.apply()
-
-                autoColorHandler.postDelayed(this, intervalMillis)
             }
         }
-        autoColorHandler.postDelayed(autoColorRunnable!!, intervalMillis)
     }
 
     private fun stopAutoColorChange() {
-        autoColorRunnable?.let {
-            autoColorHandler.removeCallbacks(it)
-        }
-        autoColorRunnable = null
+        autoColorJob?.cancel()
+        autoColorJob = null
     }
 
     private fun applyDigitBackgrounds(digitViews: List<TextView>) {
@@ -522,21 +523,17 @@ class MainActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
-    private val dimRunnable = Runnable {
-        val layoutParams = window.attributes
-        layoutParams.screenBrightness = 0.4f
-        window.attributes = layoutParams
-    }
-
-    private fun startDimTimer() {
-        dimHandler.postDelayed(dimRunnable, IDLE_DELAY_MS)
-    }
-
     private fun resetDimTimer() {
-        dimHandler.removeCallbacks(dimRunnable)
+        dimJob?.cancel()
+        dimJob = lifecycleScope.launch {
+            delay(IDLE_DELAY_MS)
+            val layoutParams = window.attributes
+            layoutParams.screenBrightness = 0.4f
+            window.attributes = layoutParams
+        }
+        // Reset brightness immediately on interaction
         val layoutParams = window.attributes
         layoutParams.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
         window.attributes = layoutParams
-        startDimTimer()
     }
 }

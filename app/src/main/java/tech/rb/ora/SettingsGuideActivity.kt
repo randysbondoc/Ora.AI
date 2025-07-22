@@ -1,17 +1,18 @@
 package tech.rb.ora
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Html
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import tech.rb.ora.databinding.ActivitySettingsGuideBinding
 
 class SettingsGuideActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsGuideBinding
-    private val idleHandler = Handler(Looper.getMainLooper())
-    private val idleRunnable = Runnable { finish() }
+    private var idleJob: Job? = null
     private val IDLE_DELAY_MS = 10000L // 10 seconds
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,8 +28,11 @@ class SettingsGuideActivity : AppCompatActivity() {
     }
 
     private fun resetIdleTimer() {
-        idleHandler.removeCallbacks(idleRunnable)
-        idleHandler.postDelayed(idleRunnable, IDLE_DELAY_MS)
+        idleJob?.cancel()
+        idleJob = lifecycleScope.launch {
+            delay(IDLE_DELAY_MS)
+            finish()
+        }
     }
 
     override fun onResume() {
@@ -38,7 +42,7 @@ class SettingsGuideActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        idleHandler.removeCallbacks(idleRunnable)
+        idleJob?.cancel()
     }
 
     override fun onUserInteraction() {

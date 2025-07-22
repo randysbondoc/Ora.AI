@@ -2,25 +2,18 @@ package tech.rb.ora
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.text.Html
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import tech.rb.ora.databinding.ActivityAboutBinding
 
 class AboutActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAboutBinding
-    private val idleHandler = Handler(Looper.getMainLooper())
+    private var idleJob: Job? = null
     private val IDLE_DELAY_MS = 30000L // 30 seconds
-
-    private val idleRunnable = Runnable {
-        val intent = Intent(this, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-        }
-        startActivity(intent)
-        finish()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +31,7 @@ class AboutActivity : AppCompatActivity() {
         }
 
         val aboutAppString = getString(R.string.about_app_text)
-        binding.aboutAppTextView.text = Html.fromHtml(aboutAppString, Html.FROM_HTML_MODE_LEGACY)
+        binding.aboutAppTextView.text = android.text.Html.fromHtml(aboutAppString, android.text.Html.FROM_HTML_MODE_LEGACY)
 
         binding.settingsGuideButton.setOnClickListener {
             startActivity(Intent(this, SettingsGuideActivity::class.java))
@@ -55,8 +48,15 @@ class AboutActivity : AppCompatActivity() {
     }
 
     private fun resetIdleTimer() {
-        idleHandler.removeCallbacks(idleRunnable)
-        idleHandler.postDelayed(idleRunnable, IDLE_DELAY_MS)
+        idleJob?.cancel()
+        idleJob = lifecycleScope.launch {
+            delay(IDLE_DELAY_MS)
+            val intent = Intent(this@AboutActivity, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            }
+            startActivity(intent)
+            finish()
+        }
     }
 
     override fun onResume() {
@@ -66,7 +66,7 @@ class AboutActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        idleHandler.removeCallbacks(idleRunnable)
+        idleJob?.cancel()
     }
 
     override fun onUserInteraction() {

@@ -15,22 +15,43 @@ Ora.AI is a modern, full-screen clock designed for elegance, functionality, and 
 
 ---
 
-## ✨ Features (Version 1.7)
+## ✨ A Class Apart: Features & Benefits
 
-* **Advanced Positioning Controls:** Take full control of your layout with independent vertical sliders for the Clock and Date, plus a horizontal slider for the Date.
-* **Complete UI Control:** A new toggle switch allows you to completely hide the main clock display for a minimalist, wallpaper-focused view.
-* **New Fonts:** Added 12 new custom fonts to the selection list for greater personalization, with display names updated for uniformity.
-* **Enhanced "About" Section:**
-  * All informational pages ("About", "Battery", "GitHub", "Settings Guide", "Buy me a coffee") are now on their own dedicated screens for a cleaner UI.
-  * The "Buy me a coffee" page has been redesigned with clickable app links, tappable QR codes, and 30 randomly changing inspirational quotes.
-* **Numerous Bug Fixes & Fine-Tuning:**
-  * Fixed a critical bug that caused the app to crash when taking a screenshot with a custom background by implementing the modern `PixelCopy` API.
-  * Fixed a persistent bug preventing the correct package names from being used to launch external payment apps (GCash, Maya, SeaBank).
-  * Resolved various layout and styling issues, including the GitHub logo visibility and informational screen auto-close timers.
+Ora.AI isn't just another clock app; it's a complete style engine for your screen. We provide a level of control and personalization that you won't find anywhere else.
+
+### 🎨 Unmatched Customization
+This is the core of Ora.AI. We believe you should have total control over every pixel.
+
+* **Dynamic Positioning:** Unlike other clock apps that are fixed in place, Ora.AI lets you move the **Clock and Date independently**. Use simple sliders to position them exactly where you want, both vertically and horizontally.
+* **Total Text Control:** Customize the **font, size, color, and highlight style** (Shadow or Outline) for every single text element—the main clock, the date, and the AM/PM indicator.
+* **Your Photos as a Backdrop:** Go beyond our built-in wallpapers. Select **any image from your device's gallery** to use as a personal, high-resolution background.
+* **Digit Background Styling:** Fine-tune the look of the digit containers with **Filled, Outline, or Transparent** styles, complete with color and opacity controls.
+
+### 💡 Smart & Effortless Styling
+For moments when you need inspiration, Ora.AI offers powerful tools to discover new looks without the effort.
+
+* **Style Presets:** Found a look you love? **Save up to 5 complete styles** as presets. Load them back instantly from a simple dropdown menu, letting you switch moods in a single tap.
+* **Instant Discovery:** Feeling adventurous? The **"Randomize Style"** button instantly generates a new, unique theme, discovering combinations you might not have thought of.
+* **Automated Color Cycling:** Enable **"Auto-change Text Colors"** for a dynamic, ever-changing display that cycles through the color palette at an interval you set.
+
+### ⚙️ Powerful Utility Features
+Beyond looks, Ora.AI is packed with useful features designed for a seamless experience.
+
+* **Built-in Screenshot Tool:** Capture your perfect design. A dedicated button in the settings saves a high-quality screenshot of your clock screen directly to your photo gallery.
+* **OLED Optimized & Battery Conscious:** The default **Amoled Black** theme is perfect for OLED screens, turning off pixels to save power and provide stunning contrast. The screen also **auto-dims** after a period of inactivity to conserve battery life.
+* **Immersive, Distraction-Free UI:** Ora.AI provides a true full-screen experience. The settings button **automatically hides** after a customizable delay, leaving you with a clean and elegant display.
 
 ---
 
 ## 📜 Version History
+
+### Version 1.7.1
+* **Code Modernization & Stability Update:** Replaced all `Handler` based timers throughout the application with modern, lifecycle-aware Kotlin Coroutines. This major internal refactoring improves app stability, reduces the potential for memory leaks, and makes the asynchronous code cleaner and more efficient.
+
+### Version 1.7
+* **Advanced Positioning Controls:** Added vertical and horizontal position sliders for the Clock and Date.
+* **Complete UI Control:** Added a toggle switch to show or hide the entire clock.
+* **Security & Build Fixes:** Moved GitHub token to a secure file and fixed related build errors in the `:fontspan` module. Integrated `keystore.properties` for release signing.
 
 ### Version 1.6
 * Added a full preset system with 5 save slots.
