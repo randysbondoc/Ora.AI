@@ -10,6 +10,12 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
 
+    <queries>
+        <package android:name="com.globe.gcash.android" />
+        <package android:name="com.paymaya" />
+        <package android:name="ph.seabank.seabank" />
+    </queries>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -20,6 +26,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Ora"
         tools:targetApi="31">
+        <activity
+            android:name=".GitHubActivity"
+            android:exported="false"
+            android:label="Project on GitHub"
+            android:parentActivityName=".AboutActivity"/>
         <activity
             android:name=".FullScreenImageActivity"
             android:exported="false"

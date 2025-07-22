@@ -1,4 +1,3 @@
-// ADDED: Load keystore properties at the top
 import java.util.Properties
 import java.io.FileInputStream
 
@@ -17,7 +16,6 @@ android {
     namespace = "tech.rb.ora"
     compileSdk = 34
 
-    // ADDED: Signing configuration for release builds
     signingConfigs {
         create("release") {
             if (keystorePropertiesFile.exists()) {
@@ -46,7 +44,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            // MODIFIED: Apply the signing configuration to the release build
             signingConfig = signingConfigs.getByName("release")
         }
     }
@@ -65,6 +62,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":fontspan"))
+
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
     implementation(libs.material)
@@ -72,7 +71,6 @@ dependencies {
     implementation(libs.preference.ktx)
     implementation(libs.activity.ktx)
     implementation(libs.coil)
-    implementation(libs.androidx.preference)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

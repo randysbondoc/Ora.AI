@@ -46,7 +46,7 @@
             android:id="@+id/versionTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            tools:text="Version 1.6"
+            tools:text="Version 1.7"
             app:layout_constraintBottom_toBottomOf="@id/appIconImageView"
             app:layout_constraintStart_toStartOf="@id/appNameTextView"
             app:layout_constraintTop_toBottomOf="@id/creatorTextView" />
@@ -85,64 +85,26 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/settingsGuideButton" />
 
-        <View
-            android:id="@+id/divider"
+        <Button
+            android:id="@+id/githubButton"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="24dp"
-            android:background="?android:attr/listDivider"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="GitHub Project Page"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/batteryButton" />
-
-        <ImageView
-            android:id="@+id/githubLogo"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="24dp"
-            android:src="@drawable/github_logo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider"/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_vertical"
-            app:layout_constraintStart_toEndOf="@id/githubLogo"
-            app:layout_constraintTop_toTopOf="@id/githubLogo"
-            app:layout_constraintBottom_toBottomOf="@id/githubLogo">
-
-            <Button
-                android:id="@+id/githubRepoButton"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="View on GitHub"
-                android:paddingTop="0dp"
-                android:paddingBottom="0dp"/>
-
-            <Button
-                android:id="@+id/githubReleasesButton"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Version History"
-                android:paddingTop="0dp"
-                android:paddingBottom="0dp"/>
-
-        </LinearLayout>
-
 
         <Button
             android:id="@+id/coffeeButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="32dp"
             android:text="Love my work? Buy me a coffee..."
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/githubLogo" />
+            app:layout_constraintTop_toBottomOf="@id/githubButton" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

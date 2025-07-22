@@ -12,7 +12,7 @@ class BatteryInfoActivity : AppCompatActivity() {
     private lateinit var binding: ActivityBatteryInfoBinding
     private val idleHandler = Handler(Looper.getMainLooper())
     private val idleRunnable = Runnable { finish() }
-    private val IDLE_DELAY_MS = 20000L // 20 seconds
+    private val IDLE_DELAY_MS = 10000L // 10 seconds
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +22,6 @@ class BatteryInfoActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = "Battery & Power Analysis"
 
-        // Set the formatted HTML text
         val batteryString = getString(R.string.about_battery_analysis_text)
         binding.batteryInfoTextView.text = Html.fromHtml(batteryString, Html.FROM_HTML_MODE_LEGACY)
     }

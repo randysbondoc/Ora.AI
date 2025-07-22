@@ -3,10 +3,10 @@
 compileSdk = "34"
 minSdk = "26"
 targetSdk = "34"
-versionCode = "5"
-versionName = "1.6"
-androidGradlePlugin = "8.5.0"
-kotlin = "1.9.23"
+versionCode = "7"
+versionName = "1.7"
+androidGradlePlugin = "8.11.0"
+kotlin = "2.1.20"
 activityKtx = "1.9.0"
 coil = "2.6.0"
 
@@ -21,6 +21,7 @@ preferenceKtx = "1.2.1"
 junit = "4.13.2"
 androidxJunit = "1.2.1"
 espressoCore = "3.6.1"
+preference = "1.2.1"
 
 [libraries]
 activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
@@ -34,7 +35,9 @@ coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxJunit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }

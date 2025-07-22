@@ -1,42 +1,38 @@
-# Ora - Retro Flip Clock ⏰
+# Ora.AI - Retro Flip Clock ⏰
 
-Ora is a modern, full-screen clock designed for elegance, functionality, and deep personalization. Turn any device into a stunning desk clock, a nightstand companion, or a focused work timer. You have complete control to create a look that is uniquely yours. Full customization is at your fingertips, including the ability to select your own wallpaper from your device's gallery. Ora is on a path of continuous development. Future updates will bring exciting new functions and features, including planned integration with Google Gemini and Google Assistant.
+Ora.AI is a modern, full-screen clock designed for elegance, functionality, and deep personalization. Turn any device into a stunning desk clock, a nightstand companion, or a focused work timer. You have complete control to create a look that is uniquely yours. Full customization is at your fingertips, including the ability to select your own wallpaper from your device's gallery. Ora.AI is on a path of continuous development. Future updates will bring exciting new functions and features, including planned integration with Google Gemini and Google Assistant.
 
 <table align="center">
   <tr>
     <td align="center">
-      <img src="./assets/ora_logo.png" alt="Ora Logo" width="200"/>
+      <img src="./assets/ora_logo.png" alt="Ora.AI Logo" width="200"/>
     </td>
     <td align="center">
-      <img src="./assets/ora_screenshot_v1_6.png" alt="Ora Screenshot" width="400"/>
+      <img src="./assets/ora_screenshot_v1_6.png" alt="Ora.AI Screenshot" width="400"/>
     </td>
   </tr>
 </table>
 
 ---
 
-## ✨ Features (v1.6)
+## ✨ Features (Version 1.7)
 
-* **Complete Preset System:** Save up to 5 complete style configurations and apply them instantly from a dropdown menu. Presets now show their status (Empty/Saved) and have confirmation dialogs for overwriting and clearing.
-* **Advanced Customization:**
-  * **Digit Backgrounds:** Style the background of each number as Filled, Outline, or None, with full control over color and transparency.
-  * **Horizontal Padding:** The clock now has elegant margins, and users can toggle extra padding around each digit.
-  * **Separator Control:** The ":" separators can be hidden or have their color customized.
-* **Automation & Discovery:**
-  * **Randomize Style:** A "Randomize" button instantly applies a new, random combination of styles.
-  * **Auto-Color Change:** An optional feature to automatically cycle through text colors at a user-defined interval.
-* **Enhanced "About" Screen:**
-  * A completely redesigned screen showing the app icon, version, creator, and links to the GitHub repository and version history.
-  * Separate, detailed screens for a "Settings Guide" and "Battery & Power Analysis".
-  * A "Buy me a coffee" screen with clickable QR codes.
-* **Screenshot to Gallery:** A new button in the settings captures a high-quality screenshot of your clock design and saves it to your device's Pictures folder.
-* **Major UI/UX Overhaul:** The settings menu has been completely reorganized into logical sub-menus for a much cleaner and more intuitive user experience.
+* **Advanced Positioning Controls:** Take full control of your layout with independent vertical sliders for the Clock and Date, plus a horizontal slider for the Date.
+* **Complete UI Control:** A new toggle switch allows you to completely hide the main clock display for a minimalist, wallpaper-focused view.
+* **New Fonts:** Added 12 new custom fonts to the selection list for greater personalization, with display names updated for uniformity.
+* **Enhanced "About" Section:**
+  * All informational pages ("About", "Battery", "GitHub", "Settings Guide", "Buy me a coffee") are now on their own dedicated screens for a cleaner UI.
+  * The "Buy me a coffee" page has been redesigned with clickable app links, tappable QR codes, and 30 randomly changing inspirational quotes.
+* **Numerous Bug Fixes & Fine-Tuning:**
+  * Fixed a critical bug that caused the app to crash when taking a screenshot with a custom background by implementing the modern `PixelCopy` API.
+  * Fixed a persistent bug preventing the correct package names from being used to launch external payment apps (GCash, Maya, SeaBank).
+  * Resolved various layout and styling issues, including the GitHub logo visibility and informational screen auto-close timers.
 
 ---
 
 ## 📜 Version History
 
-### Version 1.6 (Latest)
+### Version 1.6
 * Added a full preset system with 5 save slots.
 * Completely reorganized the settings menu into logical sub-screens.
 * Added advanced options for digit backgrounds (Filled, Outline, None, Color, Transparency).
@@ -61,7 +57,25 @@ Ora is a modern, full-screen clock designed for elegance, functionality, and dee
 * Added separate size and color customization for the AM/PM text.
 * Added a "Reset to Default" option.
 
-(Older versions omitted for brevity)
+### Version 1.2
+* Added ten custom fonts for the clock, date, and AM/PM.
+* Implemented a custom font picker dialog in the settings menu.
+
+### Version 1.1
+* Added a full color picker for the clock, date, and AM/PM text.
+* Added five pre-defined background images and a plain white background option.
+
+### Version 1.0
+* Initial release.
+* Features a full-screen, retro-style flip clock with seconds.
+* Includes date and AM/PM display.
+* Basic settings for text size and color.
+
+---
+
+## 🚀 The Future of Ora.AI
+
+Ora.AI is constantly evolving. We are committed to adding more powerful functions and features, with a focus on creating the best user experience and integrating exciting new AI capabilities.
 
 ---
 
@@ -74,15 +88,8 @@ Ora is a modern, full-screen clock designed for elegance, functionality, and dee
 
 ---
 
-## 🚀 Getting Started
+## 📦 Getting Started
 
 1.  Clone the repository.
 2.  Open the project in Android Studio and let Gradle sync.
 3.  Build and run the app.
-
----
-
-## 🗺️ Roadmap
-
-* **[v1.7]** Integrate a simple weather and temperature display.
-* **[v1.7]** Explore Google Gemini and Google Assistant integration.

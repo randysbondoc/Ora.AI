@@ -10,6 +10,8 @@ import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +37,10 @@ import kotlin.random.Random
 
 class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartScreenCallback {
 
+    private val idleHandler = Handler(Looper.getMainLooper())
+    private val idleRunnable = Runnable { finish() }
+    private val IDLE_DELAY_MS = 20000L // 20 seconds
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -45,6 +51,26 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                 .commit()
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    private fun resetIdleTimer() {
+        idleHandler.removeCallbacks(idleRunnable)
+        idleHandler.postDelayed(idleRunnable, IDLE_DELAY_MS)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        resetIdleTimer()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        idleHandler.removeCallbacks(idleRunnable)
+    }
+
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        resetIdleTimer()
     }
 
     override fun onPreferenceStartScreen(caller: PreferenceFragmentCompat, ps: PreferenceScreen): Boolean {
@@ -139,11 +165,14 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
                     updateAmPmSwitchState(sharedPrefs)
                     activity?.finish()
                 }
+                // Updated list of keys that will auto-close the settings page
                 "show_ampm", "show_date", "clock_size", "date_size", "clock_color", "date_color", "ampm_size", "ampm_color",
                 "clock_shadow", "date_shadow", "ampm_shadow", "hide_button_delay",
                 "show_separator", "separator_color", "digit_padding",
                 "digit_bg_style", "digit_bg_color", "digit_bg_alpha",
-                "auto_color_change_toggle", "auto_color_change_interval" -> {
+                "auto_color_change_toggle", "auto_color_change_interval",
+                "clock_vertical_position", "date_vertical_position",
+                "date_horizontal_position", "show_clock" -> {
                     activity?.finish()
                 }
             }

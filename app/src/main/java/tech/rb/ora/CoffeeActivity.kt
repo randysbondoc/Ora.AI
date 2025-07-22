@@ -2,7 +2,10 @@ package tech.rb.ora
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Html
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import tech.rb.ora.databinding.ActivityCoffeeBinding
 import kotlin.random.Random
@@ -10,6 +13,16 @@ import kotlin.random.Random
 class CoffeeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCoffeeBinding
+    private val idleHandler = Handler(Looper.getMainLooper())
+    private val IDLE_DELAY_MS = 30000L // 30 seconds
+
+    private val idleRunnable = Runnable {
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
+        startActivity(intent)
+        finish()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,11 +31,9 @@ class CoffeeActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = "Support Development"
 
-        // Set the intro text
         val introString = getString(R.string.buy_me_a_coffee_intro_text)
         binding.coffeeIntroTextView.text = Html.fromHtml(introString, Html.FROM_HTML_MODE_LEGACY)
 
-        // Set listeners for the QR code images
         binding.gcashImageView.setOnClickListener {
             showFullScreenImage(R.drawable.gcash)
         }
@@ -33,8 +44,46 @@ class CoffeeActivity : AppCompatActivity() {
             showFullScreenImage(R.drawable.seabank)
         }
 
-        // Set a random quote
+        binding.gcashLabel.setOnClickListener {
+            launchApp("com.globe.gcash.android", "GCash")
+        }
+        binding.mayaLabel.setOnClickListener {
+            launchApp("com.paymaya", "Maya")
+        }
+        binding.seabankLabel.setOnClickListener {
+            launchApp("ph.seabank.seabank", "SeaBank")
+        }
+
         setRandomQuote()
+    }
+
+    private fun resetIdleTimer() {
+        idleHandler.removeCallbacks(idleRunnable)
+        idleHandler.postDelayed(idleRunnable, IDLE_DELAY_MS)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        resetIdleTimer()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        idleHandler.removeCallbacks(idleRunnable)
+    }
+
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        resetIdleTimer()
+    }
+
+    private fun launchApp(packageName: String, appName: String) {
+        val intent = packageManager.getLaunchIntentForPackage(packageName)
+        if (intent != null) {
+            startActivity(intent)
+        } else {
+            Toast.makeText(this, "$appName app is not installed on this device.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setRandomQuote() {

@@ -18,7 +18,12 @@
     <PreferenceCategory app:title="Look &amp; Feel">
 
         <PreferenceScreen app:key="time_display_screen" app:title="Time Display" app:summary="Customize the clock, digits, separators, and AM/PM">
-            <PreferenceCategory app:title="Clock Format">
+            <SwitchPreferenceCompat
+                app:key="show_clock"
+                app:title="Show Clock"
+                app:summary="Toggle the visibility of the entire clock"
+                app:defaultValue="true" />
+            <PreferenceCategory app:title="Clock Format" app:dependency="show_clock">
                 <ListPreference
                     app:key="time_format"
                     app:title="Time Format"
@@ -27,24 +32,32 @@
                     app:entryValues="@array/time_format_values"
                     app:defaultValue="24h" />
             </PreferenceCategory>
-            <PreferenceCategory app:title="Clock (HH:MM:SS)">
+            <PreferenceCategory app:title="Clock (HH:MM:SS)" app:dependency="show_clock">
                 <Preference app:key="clock_font" app:title="Font" />
                 <SeekBarPreference app:key="clock_size" app:title="Text Size" app:defaultValue="50" android:min="30" android:max="100" app:showSeekBarValue="true" />
                 <Preference app:key="clock_color" app:title="Text Color" />
                 <SwitchPreferenceCompat app:key="clock_shadow" app:title="Text Shadow" app:defaultValue="true" />
+                <SeekBarPreference
+                    app:key="clock_vertical_position"
+                    app:title="Vertical Position"
+                    app:summary="Adjust the clock's vertical alignment"
+                    app:defaultValue="50"
+                    android:max="100"
+                    app:min="0"
+                    app:showSeekBarValue="true" />
             </PreferenceCategory>
-            <PreferenceCategory app:title="Separators (:)">
+            <PreferenceCategory app:title="Separators (:)" app:dependency="show_clock">
                 <SwitchPreferenceCompat app:key="show_separator" app:title="Show Separators" app:defaultValue="true" />
                 <Preference app:key="separator_color" app:title="Color" app:dependency="show_separator" />
             </PreferenceCategory>
-            <PreferenceCategory app:title="AM/PM Indicator">
+            <PreferenceCategory app:title="AM/PM Indicator" app:dependency="show_clock">
                 <SwitchPreferenceCompat app:key="show_ampm" app:title="Show AM/PM" app:summary="Only for 12-hour format" app:defaultValue="true"/>
                 <Preference app:key="ampm_font" app:title="Font" app:dependency="show_ampm" />
                 <SeekBarPreference app:key="ampm_size" app:title="Text Size" app:defaultValue="24" android:min="10" android:max="50" app:showSeekBarValue="true" app:dependency="show_ampm" />
                 <Preference app:key="ampm_color" app:title="Text Color" app:dependency="show_ampm" />
                 <SwitchPreferenceCompat app:key="ampm_shadow" app:title="Text Shadow" app:defaultValue="true" app:dependency="show_ampm" />
             </PreferenceCategory>
-            <PreferenceCategory app:title="Digit Background">
+            <PreferenceCategory app:title="Digit Background" app:dependency="show_clock">
                 <ListPreference app:key="digit_bg_style" app:title="Style" app:summary="%s" app:entries="@array/digit_bg_style_names" app:entryValues="@array/digit_bg_style_values" app:defaultValue="filled" />
                 <Preference app:key="digit_bg_color" app:title="Color" app:dependency="digit_bg_style" />
                 <SeekBarPreference app:key="digit_bg_alpha" app:title="Transparency" app:defaultValue="100" android:max="100" app:showSeekBarValue="true" app:dependency="digit_bg_style" />
@@ -58,6 +71,24 @@
             <SeekBarPreference app:key="date_size" app:title="Text Size" app:defaultValue="18" android:min="12" android:max="40" app:showSeekBarValue="true" app:dependency="show_date" />
             <Preference app:key="date_color" app:title="Text Color" app:dependency="show_date" />
             <SwitchPreferenceCompat app:key="date_shadow" app:title="Text Shadow" app:defaultValue="true" app:dependency="show_date" />
+            <SeekBarPreference
+                app:key="date_vertical_position"
+                app:title="Vertical Position"
+                app:summary="Adjust the date's vertical alignment"
+                app:dependency="show_date"
+                app:defaultValue="60"
+                android:max="100"
+                app:min="0"
+                app:showSeekBarValue="true" />
+            <SeekBarPreference
+                app:key="date_horizontal_position"
+                app:title="Horizontal Position"
+                app:summary="Adjust the date's horizontal alignment"
+                app:dependency="show_date"
+                app:defaultValue="50"
+                android:max="100"
+                app:min="0"
+                app:showSeekBarValue="true" />
         </PreferenceScreen>
 
         <ListPreference

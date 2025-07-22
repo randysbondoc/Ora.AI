@@ -1,7 +1,6 @@
 package tech.rb.ora
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,8 +12,15 @@ class AboutActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAboutBinding
     private val idleHandler = Handler(Looper.getMainLooper())
-    private val idleRunnable = Runnable { finish() }
-    private val IDLE_DELAY_MS = 20000L // 20 seconds
+    private val IDLE_DELAY_MS = 30000L // 30 seconds
+
+    private val idleRunnable = Runnable {
+        val intent = Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
+        startActivity(intent)
+        finish()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +30,6 @@ class AboutActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = "About Ora"
 
-        // Set Version Name
         try {
             val version = packageManager.getPackageInfo(packageName, 0).versionName
             binding.versionTextView.text = "Version $version"
@@ -32,36 +37,21 @@ class AboutActivity : AppCompatActivity() {
             binding.versionTextView.text = "Unknown Version"
         }
 
-        // Set HTML text
         val aboutAppString = getString(R.string.about_app_text)
         binding.aboutAppTextView.text = Html.fromHtml(aboutAppString, Html.FROM_HTML_MODE_LEGACY)
 
-        // Set button listeners
         binding.settingsGuideButton.setOnClickListener {
             startActivity(Intent(this, SettingsGuideActivity::class.java))
         }
-
         binding.batteryButton.setOnClickListener {
             startActivity(Intent(this, BatteryInfoActivity::class.java))
         }
-
+        binding.githubButton.setOnClickListener {
+            startActivity(Intent(this, GitHubActivity::class.java))
+        }
         binding.coffeeButton.setOnClickListener {
             startActivity(Intent(this, CoffeeActivity::class.java))
         }
-
-        binding.githubRepoButton.setOnClickListener {
-            openUrl("https://github.com/randysbondoc/Retro-Flip-Clock")
-        }
-
-        binding.githubReleasesButton.setOnClickListener {
-            openUrl("https://github.com/randysbondoc/Retro-Flip-Clock/releases")
-        }
-    }
-
-    private fun openUrl(url: String) {
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.data = Uri.parse(url)
-        startActivity(intent)
     }
 
     private fun resetIdleTimer() {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -22,6 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            android:baselineAligned="false"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -33,16 +35,22 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/gcashLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="8dp"
                     android:text="GCash"
-                    android:textStyle="bold"/>
+                    android:textColor="#0074FF"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:id="@+id/gcashImageView"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
@@ -59,16 +67,22 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/mayaLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="8dp"
                     android:text="Maya"
-                    android:textStyle="bold"/>
+                    android:textColor="#00B873"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:id="@+id/mayaImageView"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
@@ -85,16 +99,22 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/seabankLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="8dp"
                     android:text="SeaBank"
-                    android:textStyle="bold"/>
+                    android:textColor="#EE4D2D"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:id="@+id/seabankImageView"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
@@ -110,7 +130,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="(Tap an image to view full screen)"
-            android:textSize="12sp"/>
+            android:textSize="12sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -121,20 +141,45 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/quoteTextView"
-            android:layout_width="wrap_content"
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:gravity="center"
-            android:textStyle="italic" />
+            app:cardCornerRadius="12dp"
+            app:contentPadding="16dp">
 
-        <TextView
-            android:id="@+id/quoteAuthorTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textStyle="italic" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/quoteTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:lineSpacingMultiplier="1.2"
+                    android:textSize="16sp"
+                    android:textStyle="italic" />
+
+                <TextView
+                    android:id="@+id/quoteAuthorTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:gravity="end"
+                    android:textStyle="italic"
+                    android:textColor="?android:attr/textColorSecondary"/>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="24dp"
+            android:src="@drawable/coffee_cup" />
 
     </LinearLayout>
 </ScrollView>

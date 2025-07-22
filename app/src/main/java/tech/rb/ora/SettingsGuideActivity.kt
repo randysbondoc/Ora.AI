@@ -12,7 +12,7 @@ class SettingsGuideActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySettingsGuideBinding
     private val idleHandler = Handler(Looper.getMainLooper())
     private val idleRunnable = Runnable { finish() }
-    private val IDLE_DELAY_MS = 20000L // 20 seconds
+    private val IDLE_DELAY_MS = 10000L // 10 seconds
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +22,6 @@ class SettingsGuideActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = "Settings Guide"
 
-        // Set the formatted HTML text
         val guideString = getString(R.string.settings_guide_text)
         binding.settingsGuideTextView.text = Html.fromHtml(guideString, Html.FROM_HTML_MODE_LEGACY)
     }

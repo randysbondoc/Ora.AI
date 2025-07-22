@@ -1,4 +1,4 @@
-package tech.rb.ora
+package tech.rb.ora.fontspan
 
 import android.graphics.Typeface
 import android.text.TextPaint

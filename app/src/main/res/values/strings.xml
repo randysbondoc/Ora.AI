@@ -2,14 +2,52 @@
     <string name="app_name">Ora</string>
 
     <string-array name="font_display_names">
-        <item>Font 1</item> <item>Font 2</item> <item>Font 3</item> <item>Font 4</item> <item>Font 5</item>
-        <item>Font 6</item> <item>Font 7</item> <item>Font 8</item> <item>Font 9</item> <item>Font 10</item>
+        <item>Orbitron Regular 1</item>
+        <item>Press Start 2P 2</item>
+        <item>Cutive Mono 3</item>
+        <item>Cinzel 4</item>
+        <item>Righteous 5</item>
+        <item>Josefin Sans 6</item>
+        <item>Lora 7</item>
+        <item>Montserrat 8</item>
+        <item>Anton 9</item>
+        <item>Bitcount 10</item>
+        <item>Fres Mango 11</item>
+        <item>Freshman 12</item>
+        <item>GO3v2 13</item>
+        <item>Grage 14</item>
+        <item>Grage Regular 15</item>
+        <item>KG Happy 16</item>
+        <item>Notedry 17</item>
+        <item>Porkh 18</item>
+        <item>Porkys 19</item>
+        <item>Signatra 20</item>
+        <item>Starborn 21</item>
+        <item>Toasty Milk 22</item>
     </string-array>
     <string-array name="font_file_values">
-        <item>orbitron_regular.ttf</item> <item>press_start_2p_regular.ttf</item> <item>cutive_mono_regular.ttf</item>
-        <item>cinzel_regular.ttf</item> <item>righteous_regular.ttf</item> <item>josefin_sans_regular.ttf</item>
-        <item>lora_regular.ttf</item> <item>montserrat_regular.ttf</item> <item>anton_regular.ttf</item>
+        <item>orbitron_regular.ttf</item>
+        <item>press_start_2p_regular.ttf</item>
+        <item>cutive_mono_regular.ttf</item>
+        <item>cinzel_regular.ttf</item>
+        <item>righteous_regular.ttf</item>
+        <item>josefin_sans_regular.ttf</item>
+        <item>lora_regular.ttf</item>
+        <item>montserrat_regular.ttf</item>
+        <item>anton_regular.ttf</item>
         <item>bitcount_variable.ttf</item>
+        <item>fres_mango.ttf</item>
+        <item>freshman.ttf</item>
+        <item>go3v2.ttf</item>
+        <item>grage.ttf</item>
+        <item>grage_regular.ttf</item>
+        <item>kghappy.ttf</item>
+        <item>notedry.ttf</item>
+        <item>porkh.ttf</item>
+        <item>porkys.ttf</item>
+        <item>signatra.ttf</item>
+        <item>starborn.ttf</item>
+        <item>toastymilk.ttf</item>
     </string-array>
     <string-array name="time_format_names">
         <item>24-Hour</item> <item>12-Hour</item>
@@ -50,12 +88,20 @@
 
     <string name="about_app_text">
         <![CDATA[
-        <h2><font color=\'#03A9F4\'>A Clock Built For You</font></h2>
-        Ora is a modern, full-screen clock designed for elegance, functionality, and deep personalization. Turn any device into a stunning desk clock, a nightstand companion, or a focused work timer.
+        <h2><font color=\'#03A9F4\'>Engineered for Your Evolving Needs</font></h2>
+        Ora is a modern, full-screen clock designed for <b>elegance, functionality, and profound personalization</b>. Seamlessly transform any Android device into a <i>sophisticated desk clock, an intuitive nightstand companion, a focused productivity timer, or an exquisite digital ornament.</i>
         <br/><br/>
-        You have complete control to create a look that is uniquely yours. Full customization is at your fingertips, including the ability to <b>select your own wallpaper</b> from your device\'s gallery.
+        <h3><font color=\'#BA68C8\'>Key Features & Benefits</font></h3>
+        &#8226; <b>Total Customization:</b> Control every aspect of your clock\'s appearance, including using <b>your own photos</b> as a background.
         <br/><br/>
-        Ora is on a path of <b>continuous development</b>. Future updates will bring exciting new functions and features, including planned integration with <b>Google Gemini and Google Assistant</b>.
+        &#8226; <b>Style Presets:</b> Save and load up to 5 of your favorite designs with a single tap from the dropdown menu.
+        <br/><br/>
+        &#8226; <b>Discovery Tools:</b> Instantly find new looks with the <b>Randomize</b> button or let the colors cycle automatically with the <b>Auto-change</b> feature.
+        <br/><br/>
+        &#8226; <b>Utility Features:</b> Capture your creations with the built-in <b>Screenshot</b> tool and get help with the detailed <b>Settings Guide</b>.
+        <br/><br/>
+        <h3><font color=\'#BA68C8\'>The Future of Ora</font></h3>
+        Ora is on a path of <i>continuous development</i>. Future updates will bring exciting new functions, including planned integration with <b>Google Gemini and Google Assistant</b>. For comprehensive insights into ongoing developments, please consult our official GitHub page.
         ]]>
     </string>
 
@@ -80,39 +126,39 @@
         A complete overview of every setting in Ora.
         <br/><br/>
         <h3><font color=\'#BA68C8\'>Preset Management</font></h3>
-        &#8226; <b>Apply a Preset:</b> Choose from a dropdown to instantly apply one of your 5 saved styles.
+        &#8226; <font color=\'#FFC107\'><b>Apply a Preset:</b></font> Choose from a dropdown to instantly apply one of your 5 saved styles.
         <br/>
-        &#8226; <b>Save Current Style:</b> Saves your current look into one of the 5 preset slots.
+        &#8226; <font color=\'#FFC107\'><b>Save Current Style:</b></font> Saves your current look into one of the 5 preset slots.
         <br/>
-        &#8226; <b>Clear a Preset Slot:</b> Permanently deletes a saved style from a preset slot.
+        &#8226; <font color=\'#FFC107\'><b>Clear a Preset Slot:</b></font> Permanently deletes a saved style from a preset slot.
         <br/><br/>
         <h3><font color=\'#BA68C8\'>Look & Feel</font></h3>
         <h4><i><font color=\'#03A9F4\'>Time Display</font></i></h4>
-        &#8226; <b>Time Format:</b> Switch between 12-hour and 24-hour display.
+        &#8226; <font color=\'#FFC107\'><b>Time Format:</b></font> Switch between 12-hour and 24-hour display.
         <br/>
-        &#8226; <b>Clock Font/Size/Color/Shadow:</b> Full customization for the main time digits.
+        &#8226; <font color=\'#FFC107\'><b>Clock Customization:</b></font> Full control over the font, size, color, and shadow for the main time digits.
         <br/>
-        &#8226; <b>Separators:</b> Show or hide the \':\' and change its color.
+        &#8226; <font color=\'#FFC107\'><b>Separators:</b></font> Show or hide the \':\' and change its color.
         <br/>
-        &#8226; <b>AM/PM Indicator:</b> Toggle visibility and customize the font, size, color, and shadow.
+        &#8226; <font color=\'#FFC107\'><b>AM/PM Indicator:</b></font> Toggle visibility and customize the font, size, color, and shadow.
         <br/>
-        &#8226; <b>Digit Background:</b> Change the style of the box behind each number to Filled, Outline, or None. Control its color, transparency, and padding.
+        &#8226; <font color=\'#FFC107\'><b>Digit Background:</b></font> Change the style of the box behind each number to Filled, Outline, or None. Control its color, transparency, and padding.
         <br/><br/>
         <h4><i><font color=\'#03A9F4\'>Date Display</font></i></h4>
-        &#8226; Customize the font, size, color, and shadow for the date text, or hide it completely.
+        &#8226; <font color=\'#FFC107\'><b>Date Customization:</b></font> Customize the font, size, color, and shadow for the date text, or hide it completely.
         <br/><br/>
         <h4><i><font color=\'#03A9F4\'>Background Style</font></i></h4>
-        &#8226; Choose from predefined styles or select any image from your device for the main screen background.
+        &#8226; <font color=\'#FFC107\'><b>Style:</b></font> Choose from predefined styles or select any image from your device for the main screen background.
         <br/><br/>
         <h3><font color=\'#BA68C8\'>Behavior & Features</font></h3>
-        &#8226; <b>Automation & Fun:</b> Discover new styles with the <b>Randomize</b> button or enable <b>Auto-change Text Colors</b> to have them cycle automatically.
+        &#8226; <font color=\'#FFC107\'><b>Automation & Fun:</b></font> Discover new styles with the <b>Randomize</b> button or enable <b>Auto-change Text Colors</b> to have them cycle automatically.
         <br/><br/>
         <h3><font color=\'#BA68C8\'>System</font></h3>
-        &#8226; <b>Auto-hide Settings Button:</b> Control how long the settings button stays visible (3-20 seconds).
+        &#8226; <font color=\'#FFC107\'><b>Auto-hide Settings Button:</b></font> Control how long the settings button stays visible (3-20 seconds).
         <br/><br/>
-        &#8226; <b>Take Screenshot of Clock:</b> Saves a high-quality image of your current clock screen to your device\'s photo gallery.
+        &#8226; <font color=\'#FFC107\'><b>Take Screenshot of Clock:</b></font> Saves a high-quality image of your current clock screen to your device\'s photo gallery.
         <br/><br/>
-        &#8226; <b>Reset All Settings:</b> Restore every setting to its original, default state.
+        &#8226; <font color=\'#FFC107\'><b>Reset All Settings:</b></font> Restore every setting to its original, default state.
         ]]>
     </string>
 
@@ -124,8 +170,8 @@
         My plan is to continue working on Ora, adding new features and improvements. You can always check the latest developments on my GitHub page. To keep the late-night coding sessions going, I run on coffee. If you enjoy the app, treating me to a coffee is a wonderful way to show your support and is greatly appreciated!
         ]]>
     </string>
-    <string name="thank_you_message">Thank you for your generosity and support!</string>
 
+    <string name="thank_you_message">Thank you for your generosity and support!</string>
     <string-array name="support_quotes">
         <item>"The smallest act of kindness is worth more than the grandest intention."</item>
         <item>"We make a living by what we get, but we make a life by what we give."</item>

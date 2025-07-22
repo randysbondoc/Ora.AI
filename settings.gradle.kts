@@ -14,3 +14,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Ora"
 include(":app")
+include(":fontspan")

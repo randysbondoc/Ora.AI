@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
@@ -20,12 +21,14 @@ import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.util.TypedValue
+import android.view.PixelCopy
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -117,6 +120,7 @@ class MainActivity : AppCompatActivity() {
         stopAutoColorChange()
     }
 
+
     override fun onDestroy() {
         super.onDestroy()
         timeHandler.removeCallbacksAndMessages(null)
@@ -142,30 +146,64 @@ class MainActivity : AppCompatActivity() {
     private fun checkForScreenshotRequest() {
         if (sharedPreferences.getBoolean("take_screenshot_flag", false)) {
             sharedPreferences.edit().putBoolean("take_screenshot_flag", false).apply()
-            // Use a small delay to ensure the UI is fully rendered after settings close
             Handler(Looper.getMainLooper()).postDelayed({
-                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) { // P is API 28
-                    when {
-                        ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED -> {
-                            captureAndSaveScreenshot()
-                        }
-                        else -> {
-                            requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        }
-                    }
-                } else { // No runtime permission needed for API 29+
+                requestScreenshotPermissionsAndCapture()
+            }, 300)
+        }
+    }
+
+    private fun requestScreenshotPermissionsAndCapture() {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            when {
+                ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED -> {
                     captureAndSaveScreenshot()
                 }
-            }, 300) // 300ms delay to allow UI to settle
+                else -> {
+                    requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                }
+            }
+        } else {
+            captureAndSaveScreenshot()
         }
     }
 
     private fun captureAndSaveScreenshot() {
         val view = binding.root
         val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        view.draw(canvas)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Use PixelCopy for Android Oreo (API 26) and newer
+            val locationOfViewInWindow = IntArray(2)
+            view.getLocationInWindow(locationOfViewInWindow)
+            val rect = Rect(locationOfViewInWindow[0], locationOfViewInWindow[1],
+                locationOfViewInWindow[0] + view.width, locationOfViewInWindow[1] + view.height)
+
+            PixelCopy.request(window, rect, bitmap, { copyResult ->
+                if (copyResult == PixelCopy.SUCCESS) {
+                    saveBitmapToStorage(bitmap)
+                } else {
+                    runOnUiThread {
+                        Toast.makeText(this, "Screenshot failed with PixelCopy", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }, Handler(Looper.getMainLooper()))
+        } else {
+            // Fallback for older Android versions
+            try {
+                val canvas = Canvas(bitmap)
+                view.draw(canvas)
+                saveBitmapToStorage(bitmap)
+            } catch (t: Throwable) {
+                Log.e("MainActivity", "Failed to capture screenshot with fallback", t)
+                Toast.makeText(this, "Failed to save screenshot: ${t.message}", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun saveBitmapToStorage(bitmap: Bitmap) {
         val timestamp = System.currentTimeMillis()
         val filename = "Ora_Screenshot_$timestamp.png"
         val contentValues = ContentValues().apply {
@@ -180,7 +218,9 @@ class MainActivity : AppCompatActivity() {
                 contentResolver.openOutputStream(uri).use { outputStream ->
                     if (outputStream != null) {
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-                        Toast.makeText(this, "Screenshot saved to Pictures/Ora", Toast.LENGTH_LONG).show()
+                        runOnUiThread { // Ensure Toast is on the main thread
+                            Toast.makeText(this, "Screenshot saved to Pictures/Ora", Toast.LENGTH_LONG).show()
+                        }
                     } else {
                         throw IOException("Failed to get output stream.")
                     }
@@ -188,9 +228,13 @@ class MainActivity : AppCompatActivity() {
             } else {
                 throw IOException("Failed to create new MediaStore record.")
             }
-        } catch (e: Exception) {
-            Log.e("MainActivity", "Failed to save screenshot", e)
-            Toast.makeText(this, "Failed to save screenshot", Toast.LENGTH_SHORT).show()
+        } catch (t: Throwable) {
+            Log.e("MainActivity", "Failed to save bitmap", t)
+            runOnUiThread { // Ensure Toast is on the main thread
+                Toast.makeText(this, "Failed to save screenshot: ${t.message}", Toast.LENGTH_LONG).show()
+            }
+        } finally {
+            bitmap.recycle() // Free up memory after saving
         }
     }
 
@@ -239,13 +283,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun applyAllSettings() {
+        // This single function will now handle applying all settings on resume
         binding.dateTextView.visibility = if (sharedPreferences.getBoolean("show_date", true)) View.VISIBLE else View.GONE
 
         val allDigitTextViews = listOf(binding.hour1, binding.hour2, binding.minute1, binding.minute2, binding.second1, binding.second2)
         val separatorTextViews = listOf(binding.separator1, binding.separator2)
 
         val clockFontFile = sharedPreferences.getString("clock_font", "orbitron_regular.ttf")
-        loadAndApplyFont(clockFontFile, allDigitTextViews + separatorTextViews)
+        loadAndApplyFont(clockFontFile, allDigitTextViews + separatorTextViews + listOf(binding.ampmTextView))
 
         val dateFontFile = sharedPreferences.getString("date_font", "josefin_sans_regular.ttf")
         loadAndApplyFont(dateFontFile, listOf(binding.dateTextView))
@@ -289,6 +334,30 @@ class MainActivity : AppCompatActivity() {
         } else {
             stopAutoColorChange()
         }
+
+        // Apply Clock Visibility
+        binding.clockContainer.visibility = if (sharedPreferences.getBoolean("show_clock", true)) View.VISIBLE else View.GONE
+
+        // Apply Vertical and Horizontal Position Settings
+        val clockVerticalPercent = sharedPreferences.getInt("clock_vertical_position", 50)
+        val dateVerticalPercent = sharedPreferences.getInt("date_vertical_position", 60)
+        val dateHorizontalPercent = sharedPreferences.getInt("date_horizontal_position", 50)
+
+        // Convert percentages (0-100) to bias (0.0-1.0)
+        val clockVerticalBias = clockVerticalPercent / 100f
+        val dateVerticalBias = dateVerticalPercent / 100f
+        val dateHorizontalBias = dateHorizontalPercent / 100f
+
+        // Apply bias to the clock container
+        val clockParams = binding.clockContainer.layoutParams as ConstraintLayout.LayoutParams
+        clockParams.verticalBias = clockVerticalBias
+        binding.clockContainer.layoutParams = clockParams
+
+        // Apply bias to the date text view
+        val dateParams = binding.dateTextView.layoutParams as ConstraintLayout.LayoutParams
+        dateParams.verticalBias = dateVerticalBias
+        dateParams.horizontalBias = dateHorizontalBias
+        binding.dateTextView.layoutParams = dateParams
     }
 
     private fun startAutoColorChange() {
