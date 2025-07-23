@@ -45,6 +45,9 @@ Beyond looks, Ora.AI is packed with useful features designed for a seamless expe
 
 ## 📜 Version History
 
+### Version 1.7.2
+* **Performance Optimization:** Implemented a font caching system to prevent repeated disk access. This makes applying styles, presets, and viewing the font list in settings significantly faster and more responsive.
+
 ### Version 1.7.1
 * **Code Modernization & Stability Update:** Replaced all `Handler` based timers throughout the application with modern, lifecycle-aware Kotlin Coroutines. This major internal refactoring improves app stability, reduces the potential for memory leaks, and makes the asynchronous code cleaner and more efficient.
 

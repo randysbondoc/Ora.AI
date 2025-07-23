@@ -31,7 +31,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -488,16 +487,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadAndApplyFont(fontFileName: String?, textViews: List<TextView>) {
         if (fontFileName == null) return
-        try {
-            val fontName = fontFileName.substringBeforeLast(".")
-            val fontResId = resources.getIdentifier(fontName, "font", packageName)
-            if (fontResId != 0) {
-                val typeface = ResourcesCompat.getFont(this, fontResId)
-                textViews.forEach { it.typeface = typeface }
-            }
-        } catch (e: Exception) {
-            Log.e("MainActivity", "Could not load font: $fontFileName", e)
-        }
+        // ** THE FIX IS HERE **
+        // Get the typeface from the central cache
+        val typeface = FontCache.getTypeface(this, fontFileName)
+        textViews.forEach { it.typeface = typeface }
     }
 
     private fun updateDigit(textView: TextView, newDigit: String) {

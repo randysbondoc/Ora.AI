@@ -23,7 +23,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -476,17 +475,9 @@ class SettingsActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPrefere
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val view = super.getView(position, convertView, parent) as TextView
                 val fontFileName = fileNames[position]
-                try {
-                    val fontName = fontFileName.substringBeforeLast(".")
-                    val fontResId = context.resources.getIdentifier(fontName, "font", context.packageName)
-                    if (fontResId != 0) {
-                        val typeface = ResourcesCompat.getFont(context, fontResId)
-                        view.typeface = typeface
-                    }
-                } catch (e: Exception) {
-                    Log.e("FontAdapter", "Failed to load font: $fontFileName", e)
-                    view.typeface = Typeface.DEFAULT
-                }
+                // ** THE FIX IS HERE **
+                // Get the typeface from the central cache
+                view.typeface = FontCache.getTypeface(context, fontFileName) ?: Typeface.DEFAULT
                 return view
             }
         }
